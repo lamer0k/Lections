@@ -1,0 +1,28 @@
+:source-language: text
+:source-highlighter: highlightjs
+:highlighter-linenums-mode: inline
+
+:backend: revealjs
+:revealjs_theme: white
+:revealjs_backgroundTransition: concave
+:revealjs_transition: convex
+:revealjs_display: table-cell
+:revealjs_controlsLayout: edges
+
+= Курс
+:toc-title: Содержание
+:sectnums:
+
+---
+
+:description: Тест
+
+include::Preface.adoc[]
+
+include::Introdaction.adoc[]
+
+include::Lection1.adoc[]
+
+include::Lection2.adoc[]
+
+include::biblio.adoc[]
