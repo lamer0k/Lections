@@ -2,23 +2,13 @@
 :source-highlighter: highlightjs
 :highlighter-linenums-mode: inline
 
-:backend: revealjs
-:revealjs_theme: white
-:revealjs_backgroundTransition: concave
-:revealjs_transition: convex
-:revealjs_display: table-cell
-:revealjs_controlsLayout: edges
-
 = Курс
-include::attributes-ru.adoc[]
-
+:toc-title: Содержание
 :sectnums:
 
 ---
 
 :description: Тест
-
-
 
 include::Preface.adoc[]
 
