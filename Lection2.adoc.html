@@ -1,7 +1,7 @@
   <html>
     <head>
       <meta charset="utf-8">
-      <title>A hackable text editor for the 21st CenturySpell Check packageGet to know Atom!КурсCreate Repository</title>
+      <title>Get to know Atom!</title>
       <style>
         #wrapper {width: 960px; margin: 0 auto;}
         /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -657,10 +657,10 @@ std::uint8_t
 </div>
 </div>
 <div class="sect2">
-<h3 id="_пользовательские_типы_и_псевдонимы">Пользовательские типы и псевдонимы</h3>
+<h3 id="_пользовательские_типы">Пользовательские типы</h3>
 <div id="__asciidoctor-preview-64__" class="paragraph">
-<p>Вы можете определить свой тип сами, либо сделать псевдоним типа. Любой класс или структрура,
-определенная вами, будет являться вашим типов. Например:</p>
+<p>Вы можете определить свой тип сами, либо сделать псевдоним типа. Любой класс или структура,
+определенная вами, будет являться вашим типом. Например:</p>
 </div>
 <div id="__asciidoctor-preview-65__" class="listingblock source">
 <div class="content">
@@ -689,11 +689,69 @@ int main()
 </div>
 </div>
 <div class="sect2">
-<h3 id="_неявное_преобразование_типов">Неявное преобразование типов</h3>
+<h3 id="_псевдонимы_типов">Псевдонимы типов</h3>
 <div id="__asciidoctor-preview-66__" class="paragraph">
+<p>Для того, чтобы было было понятнее работать с типом можно вводить их псевдонимы (alias). С помощью
+ключевого слова <strong>using</strong> ;</p>
+</div>
+<div id="__asciidoctor-preview-67__" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">auto t = std::make_tuple(10, "Test", 3.14, 2U);  <i class="conum" data-value="1"></i><b>(1)</b>
+using tMytype = decltype(t) ;  <i class="conum" data-value="2"></i><b>(2)</b>
+using tShortType = std::tuple&lt;int, string, double, tU32&gt; ; <i class="conum" data-value="3"></i><b>(3)</b>
+
+void(tMyType &amp; value) {    <i class="conum" data-value="4"></i><b>(4)</b>
+  ...
+}
+
+
+int main() {
+  using tU32 = unsigned int ;  <i class="conum" data-value="5"></i><b>(5)</b>
+  tU32 i = 10U ;               <i class="conum" data-value="6"></i><b>(6)</b>
+
+  myfunction(t) ;              <i class="conum" data-value="7"></i><b>(7)</b>
+}</code></pre>
+</div>
+</div>
+<div id="__asciidoctor-preview-68__" class="openblock notes">
+<div class="content">
+<div id="__asciidoctor-preview-69__" class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Определяем кортеж из 4 элементов разного типа</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Объявляем псевдоним типа, который имеет кортеж (тип выводится компилятором)</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>Тоже самое что и &lt;2&gt; за исключением того, что указываем тип напрямую</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Объявляем функцию, принимающую аргумент типа, который имеет кортеж</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>Объявляем псевдоним типа unsigned int</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>Определяем переменную типа unsigned int</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_неявное_преобразование_типов">Неявное преобразование типов</h3>
+<div id="__asciidoctor-preview-76__" class="paragraph">
 <p>Базовые/простые типы неявно можно привести друг к другу. Т.е</p>
 </div>
-<div id="__asciidoctor-preview-67__" class="listingblock source">
+<div id="__asciidoctor-preview-77__" class="listingblock source">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int a = 0; <i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -706,7 +764,7 @@ bool a = -4;  <i class="conum" data-value="4"></i><b>(4)</b>
 bool a  = 0;  <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-68__" class="colist arabic">
+<div id="__asciidoctor-preview-78__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -733,29 +791,29 @@ bool a  = 0;  <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_явное_преобразование_типов">Явное преобразование типов</h3>
-<div id="__asciidoctor-preview-74__" class="paragraph">
+<div id="__asciidoctor-preview-84__" class="paragraph">
 <p>Так как компилятор может сделать за вас, то, что вы вообще не ожидаете, не нужно использовать неявное
 преобразование типа.</p>
 </div>
-<div id="__asciidoctor-preview-75__" class="paragraph">
+<div id="__asciidoctor-preview-85__" class="paragraph">
 <p>Вместо этого, лучше указать компилятору явное преобразование из одного типа в другой.
 В этом случае, вы говорите компилятору, что я понимаю, что я делаю, это именно так и задумано</p>
 </div>
-<div id="__asciidoctor-preview-76__" class="paragraph">
+<div id="__asciidoctor-preview-86__" class="paragraph">
 <p>Для преобразований из одного типа используют 4 вариантов преобразования:</p>
 </div>
-<div id="__asciidoctor-preview-77__" class="ulist">
+<div id="__asciidoctor-preview-87__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-78__">
+<li id="__asciidoctor-preview-88__">
 <p>static_cast</p>
 </li>
-<li id="__asciidoctor-preview-79__">
+<li id="__asciidoctor-preview-89__">
 <p>const_cast</p>
 </li>
-<li id="__asciidoctor-preview-80__">
+<li id="__asciidoctor-preview-90__">
 <p>reinterpret_cast</p>
 </li>
-<li id="__asciidoctor-preview-81__">
+<li id="__asciidoctor-preview-91__">
 <p>dynamic_cast</p>
 </li>
 </ul>
@@ -763,15 +821,15 @@ bool a  = 0;  <i class="conum" data-value="5"></i><b>(5)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_static_cast">static_cast</h3>
-<div id="__asciidoctor-preview-82__" class="paragraph">
+<div id="__asciidoctor-preview-92__" class="paragraph">
 <p><strong>static_cast</strong> позволяет сделать приведение близких типов (целые, пользовательских типов которые могут
 создаваться из типов который приводится, и указатель на void* к указателю на любой тип).</p>
 </div>
-<div id="__asciidoctor-preview-83__" class="paragraph">
+<div id="__asciidoctor-preview-93__" class="paragraph">
 <p>Проверка производится на уровне компиляции, так что в случае ошибки сообщение будет получено в момент
 сборки приложения или библиотеки.</p>
 </div>
-<div id="__asciidoctor-preview-84__" class="listingblock source">
+<div id="__asciidoctor-preview-94__" class="listingblock source">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int a = static_cast&lt;int&gt;(0); <i class="conum" data-value="1"></i><b>(1)</b>
 
@@ -788,9 +846,9 @@ float f = static_cast&lt;float&gt;(3.14) ;  <i class="conum" data-value="6"></i>
 Complex f = static_cast&lt;3.14&gt; <i class="conum" data-value="7"></i><b>(7)</b></code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-85__" class="openblock notes">
+<div id="__asciidoctor-preview-95__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-86__" class="colist arabic">
+<div id="__asciidoctor-preview-96__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -828,35 +886,35 @@ Complex f = static_cast&lt;3.14&gt; <i class="conum" data-value="7"></i><b>(7)</
 </div>
 <div class="sect2">
 <h3 id="_reinterpret_cast">reinterpret_cast</h3>
-<div id="__asciidoctor-preview-94__" class="paragraph">
+<div id="__asciidoctor-preview-104__" class="paragraph">
 <p><strong>reinterpret_cast</strong> преобразует типы, несовместимыми друг с другом, и используется для:</p>
 </div>
-<div id="__asciidoctor-preview-95__" class="ulist">
+<div id="__asciidoctor-preview-105__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-96__">
+<li id="__asciidoctor-preview-106__">
 <p>В свой собственный тип</p>
 </li>
-<li id="__asciidoctor-preview-97__">
+<li id="__asciidoctor-preview-107__">
 <p>Указателя в интегральный тип</p>
 </li>
-<li id="__asciidoctor-preview-98__">
+<li id="__asciidoctor-preview-108__">
 <p>Интегрального типа в указатель</p>
 </li>
-<li id="__asciidoctor-preview-99__">
+<li id="__asciidoctor-preview-109__">
 <p>Указателя одного типа в указатель другого типа</p>
 </li>
-<li id="__asciidoctor-preview-100__">
+<li id="__asciidoctor-preview-110__">
 <p>Указателя на функцию одного типа в указатель на функцию другого типа</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-101__" class="listingblock source">
+<div id="__asciidoctor-preview-111__" class="listingblock source">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">auto ptr = reinterpret_cast&lt;volatile uint32_t *&gt;(0x40010000) ; <i class="conum" data-value="1"></i><b>(1)</b>
 auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-102__" class="colist arabic">
+<div id="__asciidoctor-preview-112__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -875,61 +933,61 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 <div class="sect1">
 <h2 id="_память">Память</h2>
 <div class="sectionbody">
-<div id="__asciidoctor-preview-105__" class="paragraph">
+<div id="__asciidoctor-preview-115__" class="paragraph">
 <p>Как говорилось в первой лекции, ARM имеет общее адресное пространство для данных и команд.</p>
 </div>
-<div id="__asciidoctor-preview-106__" class="paragraph">
+<div id="__asciidoctor-preview-116__" class="paragraph">
 <p>Ядро ARM имеет 4 Гбайт последовательной памяти с адресов 0x00000000 до 0xFFFFFFFF.</p>
 </div>
-<div id="__asciidoctor-preview-107__" class="paragraph">
+<div id="__asciidoctor-preview-117__" class="paragraph">
 <p>Различные типы памяти могут быть расположены по эти адресам. Обычно микроконтроллер имеет постоянную
 память, из которой можно только читать (ПЗУ) и оперативную память, из которой можно читать и в
 которую можно писать (ОЗУ).</p>
 </div>
-<div id="__asciidoctor-preview-108__" class="paragraph">
+<div id="__asciidoctor-preview-118__" class="paragraph">
 <p>Также часть адресов этой памяти отведены под регистры управления и регистры периферии.</p>
 </div>
 <div class="sect2">
 <h3 id="_память_микроконтроллера_cortexm4">Память микроконтроллера CortexM4</h3>
-<div id="__asciidoctor-preview-109__" class="imageblock">
+<div id="__asciidoctor-preview-119__" class="imageblock">
 <div class="content">
 <img src="Lection2Img/Figure4.png" alt="300" width="500">
 </div>
 <div class="title">Figure 2. Карта памяти микропроцессора</div>
 </div>
-<div id="__asciidoctor-preview-110__" class="openblock notes">
+<div id="__asciidoctor-preview-120__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-111__" class="paragraph">
+<div id="__asciidoctor-preview-121__" class="paragraph">
 <p>Микроконтроллер  на ядре Cortex M4 выполнен по Гарвардской архитектуре, память здесь разделена на
 три типа:</p>
 </div>
-<div id="__asciidoctor-preview-112__" class="ulist">
+<div id="__asciidoctor-preview-122__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-113__">
+<li id="__asciidoctor-preview-123__">
 <p>ПЗУ  (FLASH память в которой храниться программа)</p>
 </li>
-<li id="__asciidoctor-preview-114__">
+<li id="__asciidoctor-preview-124__">
 <p>ОЗУ память для хранения временных данных (туда же можно по необходимости переместить программу и
 выполнить её из ОЗУ), память в которой находятся регистры отвечающие за настройку и работу с
 периферией и</p>
 </li>
-<li id="__asciidoctor-preview-115__">
+<li id="__asciidoctor-preview-125__">
 <p>Память для хранения постоянных данных ЕЕPROM.</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-116__" class="exampleblock">
+<div id="__asciidoctor-preview-126__" class="exampleblock">
 <div class="content">
-<div id="__asciidoctor-preview-117__" class="paragraph">
+<div id="__asciidoctor-preview-127__" class="paragraph">
 <p>Адресное пространство памяти программы (ПЗУ) находится по адресам <strong>0x00000000</strong> по <strong>0x1FFFFFFF</strong></p>
 </div>
-<div id="__asciidoctor-preview-118__" class="paragraph">
+<div id="__asciidoctor-preview-128__" class="paragraph">
 <p>Адресное пространство ОЗУ находится по адресам  <strong>0x20000000</strong> по <strong>0x3FFFFFFF</strong></p>
 </div>
-<div id="__asciidoctor-preview-119__" class="paragraph">
+<div id="__asciidoctor-preview-129__" class="paragraph">
 <p>Адресное пространство для регистров периферии находится по адресам с <strong>0x40000000</strong>  по <strong>0x5FFFFFFF</strong></p>
 </div>
-<div id="__asciidoctor-preview-120__" class="paragraph">
+<div id="__asciidoctor-preview-130__" class="paragraph">
 <p>Памяти EEPROM микропроцессора Stm32F411RE не содержит, см <a href="#Карта памяти микропроцессора">[Карта памяти микропроцессора]</a>.
 Более подробно вы можете изучить адресное пространство микропроцессора в спецификации на микропроцессор <a href="#12">[12]</a>.</p>
 </div>
@@ -940,49 +998,49 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_память_для_расположения_данных">Память для расположения данных</h3>
-<div id="__asciidoctor-preview-121__" class="paragraph">
+<div id="__asciidoctor-preview-131__" class="paragraph">
 <p>Данные в памяти могут быть расположены 3 различными способами:</p>
 </div>
-<div id="__asciidoctor-preview-122__" class="ulist">
+<div id="__asciidoctor-preview-132__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-123__">
+<li id="__asciidoctor-preview-133__">
 <p>Авто(локальные) переменные, которые являются локальными в функции располагаются в регистрах или в стеке.</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-124__" class="openblock notes">
+<div id="__asciidoctor-preview-134__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-125__" class="paragraph">
+<div id="__asciidoctor-preview-135__" class="paragraph">
 <p>Такие переменные "существуют" только внутри функции, как только функция закончится и вернется к вызывающему
 объекту, эти переменные становятся не валидными.</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-126__" class="ulist">
+<div id="__asciidoctor-preview-136__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-127__">
+<li id="__asciidoctor-preview-137__">
 <p>Глобальные переменные или статические переменные. В этом случае они инициализируются единожды.</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-128__" class="openblock notes">
+<div id="__asciidoctor-preview-138__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-129__" class="paragraph">
+<div id="__asciidoctor-preview-139__" class="paragraph">
 <p>Static означает, что та память, которая была выделена под эту переменную не будет изменяться и
 закрепляется за этой переменной до конца работы приложения.</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-130__" class="ulist">
+<div id="__asciidoctor-preview-140__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-131__">
+<li id="__asciidoctor-preview-141__">
 <p>Динамически размещаемые данные. Данные создаваемые на Куче(Heap)</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-132__" class="openblock notes">
+<div id="__asciidoctor-preview-142__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-133__" class="paragraph">
+<div id="__asciidoctor-preview-143__" class="paragraph">
 <p>Если заранее не известно, сколько объектов нужно создать, и сколько памяти они будут отнимать, то придется
 создавать их динамически, например с помощью оператора new, в таком случае, объекты будут создаваться в куче.</p>
 </div>
@@ -990,10 +1048,10 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect3">
 <h4 id="_память_под_функциикоманды">Память под функции(команды)</h4>
-<div id="__asciidoctor-preview-134__" class="paragraph">
+<div id="__asciidoctor-preview-144__" class="paragraph">
 <p>Для расположения функций используется та же самая память с границами от <strong>0x00000000 - 0xFFFFFFFF</strong>.</p>
 </div>
-<div id="__asciidoctor-preview-135__" class="paragraph">
+<div id="__asciidoctor-preview-145__" class="paragraph">
 <p>По умолчанию весь код будет лежать в сегменте .text, который расположен в readonly памяти (обычно в ROM),
 но можно разместить функции и в ОЗУ.</p>
 </div>
@@ -1001,9 +1059,9 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_указатели">Указатели</h3>
-<div id="__asciidoctor-preview-136__" class="openblock notes">
+<div id="__asciidoctor-preview-146__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-137__" class="paragraph">
+<div id="__asciidoctor-preview-147__" class="paragraph">
 <p>Как мы уже поняли, данные могут находится в ОЗУ или ПЗУ. Каждой переменной содержащей данные соответствует
 некий адрес памяти. К переменной можно обратиться непосредственно обращаясь к самой переменной, тогда мы
 можем напрямую писать или читать значение с адреса переменной, либо можно обратиться косвенно, через указатель
@@ -1011,10 +1069,10 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-138__" class="paragraph">
+<div id="__asciidoctor-preview-148__" class="paragraph">
 <p>Указатель это переменная, которая хранит адрес какой-то другой переменной:</p>
 </div>
-<div id="__asciidoctor-preview-139__" class="listingblock">
+<div id="__asciidoctor-preview-149__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main() {
   int  c = 463 ;   <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1023,9 +1081,9 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-140__" class="openblock notes">
+<div id="__asciidoctor-preview-150__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-141__" class="colist arabic">
+<div id="__asciidoctor-preview-151__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1045,13 +1103,13 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="title">Figure 3. Указатель</div>
 </div>
-<div id="__asciidoctor-preview-144__" class="paragraph">
+<div id="__asciidoctor-preview-154__" class="paragraph">
 <p>Размер указателя для нашего микроконтроллера 4 байта (32 бита).</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_взятие_адреса_и_разыменование_указателя">Взятие адреса и разыменование указателя.</h3>
-<div id="__asciidoctor-preview-145__" class="listingblock">
+<div id="__asciidoctor-preview-155__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main() {
   int  c = 463 ;              <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1064,7 +1122,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-146__" class="colist arabic">
+<div id="__asciidoctor-preview-156__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1096,15 +1154,15 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_операции_над_указателями">Операции над указателями</h3>
-<div id="__asciidoctor-preview-153__" class="openblock notes">
+<div id="__asciidoctor-preview-163__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-154__" class="paragraph">
+<div id="__asciidoctor-preview-164__" class="paragraph">
 <p>Указатели можно складывать, вычитать, сравнивать. Но указатели должны быть одного типа. Т.е. не нужно
 например складывать укатель типа <strong>char</strong> * и <strong>int</strong> *</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-155__" class="listingblock">
+<div id="__asciidoctor-preview-165__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main() {
   int  arr[] = {1,2,3,4,5} ;    <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1117,7 +1175,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-156__" class="colist arabic">
+<div id="__asciidoctor-preview-166__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1149,7 +1207,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_сложение_указателей">Сложение указателей</h3>
-<div id="__asciidoctor-preview-163__" class="listingblock">
+<div id="__asciidoctor-preview-173__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main() {
   int  arr[] = {1,2,3,4,5} ;    <i class="conum" data-value="1"></i><b>(1)</b>
@@ -1160,7 +1218,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-164__" class="imageblock">
+<div id="__asciidoctor-preview-174__" class="imageblock">
 <div class="content">
 <img src="Lection2Img/Figure6.png" alt="800" width="800">
 </div>
@@ -1169,7 +1227,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_константный_указатель_и_указатель_на_константу">Константный указатель и указатель на константу</h3>
-<div id="__asciidoctor-preview-165__" class="listingblock">
+<div id="__asciidoctor-preview-175__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main() {
   const auto pi[] = {3.14, 3.14159} ;
@@ -1183,7 +1241,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-166__" class="colist arabic">
+<div id="__asciidoctor-preview-176__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1211,7 +1269,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_ссылка">Ссылка</h3>
-<div id="__asciidoctor-preview-172__" class="listingblock">
+<div id="__asciidoctor-preview-182__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main(){
   int a = 0;
@@ -1222,7 +1280,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-173__" class="colist arabic">
+<div id="__asciidoctor-preview-183__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1238,26 +1296,26 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </tr>
 </table>
 </div>
-<div id="__asciidoctor-preview-177__" class="openblock">
+<div id="__asciidoctor-preview-187__" class="openblock">
 <div class="content">
-<div id="__asciidoctor-preview-178__" class="paragraph">
+<div id="__asciidoctor-preview-188__" class="paragraph">
 <p>Ссылка это псевдоним переменной.</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-179__" class="ulist">
+<div id="__asciidoctor-preview-189__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-180__">
+<li id="__asciidoctor-preview-190__">
 <p>У ссылки нельзя взять адрес. Если применить оператор взятия адреса к ней, то будет выведен адрес
 переменной, на которую она ссылается</p>
 </li>
-<li id="__asciidoctor-preview-181__">
+<li id="__asciidoctor-preview-191__">
 <p>Ссылка ведет себя почти также как константный указатель. Её нельзя изменять, складывать, вычитать</p>
 </li>
-<li id="__asciidoctor-preview-182__">
+<li id="__asciidoctor-preview-192__">
 <p>Ссылки нельзя сравнивать</p>
 </li>
-<li id="__asciidoctor-preview-183__">
+<li id="__asciidoctor-preview-193__">
 <p>Ссылка не может быть не проинициализирована.</p>
 </li>
 </ul>
@@ -1268,27 +1326,81 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 <div class="sect1">
 <h2 id="_регистр">Регистр</h2>
 <div class="sectionbody">
-<div id="__asciidoctor-preview-184__" class="ulist">
+<div id="__asciidoctor-preview-194__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-185__">
+<li id="__asciidoctor-preview-195__">
 <p>Существуют регистры общего назначения и специальные регистры. Регистры общего назначения расположены
 внутри ядра микроконтроллера(сверхбыстрая память).</p>
 </li>
-<li id="__asciidoctor-preview-186__">
+<li id="__asciidoctor-preview-196__">
 <p>Регистры общего назначения - это сверхбыстрая память внутри процессора, предназначенная для
 хранения адресов и промежуточных результатов вычислений (регистр общего назначения/регистр данных)
 или данных, необходимых для работы самого процессора.</p>
 </li>
-<li id="__asciidoctor-preview-187__">
+<li id="__asciidoctor-preview-197__">
 <p>Регистры специального назначения расположены в ОЗУ микроконтроллера и используются для управления
 процессором и периферийными устройствами.</p>
 </li>
-<li id="__asciidoctor-preview-188__">
+<li id="__asciidoctor-preview-198__">
 <p>Каждый регистр в архитектуре ARM представляет собой ресурс памяти и имеет длину в 32 бита, где каждый
 бит можно представить в виде выключателя с помощью которого осуществляется управление тем или иным
 параметром микроконтроллера <a href="#10">[10]</a>.</p>
 </li>
 </ul>
+</div>
+<div class="sect2">
+<h3 id="_регистры_общего_назначения">Регистры общего назначения</h3>
+<div id="__asciidoctor-preview-199__" class="paragraph">
+<p>С точки зрения прикладного программиста, процессор располагает 16-ю 32-разрядными регистрами общего
+назначения (РОН, GPR), из которых три на деле имеют специальные функции:</p>
+</div>
+<div id="__asciidoctor-preview-200__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-201__">
+<p>Оперативные регистры</p>
+</li>
+<li id="__asciidoctor-preview-202__">
+<p>Вспомогательные регистры</p>
+</li>
+<li id="__asciidoctor-preview-203__">
+<p>Специальные регистры</p>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_оперативные_регистры">Оперативные регистры</h3>
+<div id="__asciidoctor-preview-204__" class="paragraph">
+<p>Регистры <strong>R0-R3</strong>, <strong>R12</strong> являются оперативными(sratch) регистрами. Любая функция может использовать эти
+регистры по своему усмотрению и уничтожать содержимое этих регистров.</p>
+</div>
+<div id="__asciidoctor-preview-205__" class="paragraph">
+<p>Если функции нужны значения этих регистров после вызова другой функции, она должна сохранить их на
+стеке, а после вызова восстановить.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_вспомогательные_регистры">Вспомогательные регистры</h3>
+<div id="__asciidoctor-preview-206__" class="paragraph">
+<p>Регистры от <strong>R4-R11</strong> являются вспомогательными. Любая функция должна сохранить их на входе, а при
+выходе восстановить их значение.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_специальные_регистры">Специальные регистры</h3>
+<div id="__asciidoctor-preview-207__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-208__">
+<p>Регистр указателя на стек <strong>R13/SP</strong>, должен всегда указывать на последний элемент стека или ниже него.</p>
+</li>
+<li id="__asciidoctor-preview-209__">
+<p>Регистр <strong>R15/PC</strong> есть программный счетчик.</p>
+</li>
+<li id="__asciidoctor-preview-210__">
+<p>Регистр <strong>R14/LR</strong>, содержит адрес возврата функции.</p>
+</li>
+</ul>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_регистр_специального_назачения">Регистр специального назачения</h3>
@@ -1298,39 +1410,39 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="title">Figure 5. Схематичное изображение регистра</div>
 </div>
-<div id="__asciidoctor-preview-189__" class="openblock notes">
+<div id="__asciidoctor-preview-211__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-190__" class="ulist">
+<div id="__asciidoctor-preview-212__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-191__">
+<li id="__asciidoctor-preview-213__">
 <p>Название регистра</p>
 </li>
 </ul>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-192__" class="ulist">
+<div id="__asciidoctor-preview-214__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-193__">
+<li id="__asciidoctor-preview-215__">
 <p>Адрес регистра обозначается 32-битным шестнадцатеричным числом.</p>
 </li>
-<li id="__asciidoctor-preview-194__">
+<li id="__asciidoctor-preview-216__">
 <p>Тип доступа к ячейкам регистра.</p>
 </li>
-<li id="__asciidoctor-preview-195__">
+<li id="__asciidoctor-preview-217__">
 <p>Длина - количество ячеек в одном регистре. Мы будем работать с 32-битными регистрами.</p>
 </li>
-<li id="__asciidoctor-preview-196__">
+<li id="__asciidoctor-preview-218__">
 <p>Поле - набор ячеек регистра, отвечающих за работу одной из функции микроконтроллера</p>
 </li>
-<li id="__asciidoctor-preview-197__">
+<li id="__asciidoctor-preview-219__">
 <p>Значение поля - есть пространство всех возможных величин, которые может принимать поле</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-198__" class="openblock notes">
+<div id="__asciidoctor-preview-220__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-199__" class="paragraph">
+<div id="__asciidoctor-preview-221__" class="paragraph">
 <p>Значение поля зависит от длины поля. Т.е. если поле имеет длину 2, то существует 4 возможные
 значения поля (0,1,2,3). Так же как у регистра, у полей и значений полей есть режим доступа (чтение,
 записать, чтение и запись)</p>
@@ -1340,9 +1452,9 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_пример_регистра_специального_назначения">Пример регистра специального назначения</h3>
-<div id="__asciidoctor-preview-200__" class="openblock notes">
+<div id="__asciidoctor-preview-222__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-201__" class="paragraph">
+<div id="__asciidoctor-preview-223__" class="paragraph">
 <p>Как было сказано выше регистры используются для управления микроконтроллером и его периферией.
 Например, чтобы запустить таймер 1 на счет, необходимо в Таймере1, в регистре CR1(Control Register1)
 в поле CEN (Counter Enable) установить значение 1 (Enable).</p>
@@ -1355,25 +1467,25 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="title">Figure 6. Регистр CR1 Таймера 1</div>
 </div>
-<div id="__asciidoctor-preview-202__" class="literalblock">
+<div id="__asciidoctor-preview-224__" class="literalblock">
 <div class="content">
 <pre>Бит 0 CEN: Включить счетчик
     0: Счетчик включен: Disable
     1: Счетчик выключен: Enable</pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-203__" class="paragraph">
+<div id="__asciidoctor-preview-225__" class="paragraph">
 <p>Здесь, например, CEN — это поле размером 1 бит имеющее смещение 0 относительно начала регистра.
 А Enable(1) и Disable(0) это его возможные значения.</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_доступ_к_регистру_специального_назначения">Доступ к регистру специального назначения</h3>
-<div id="__asciidoctor-preview-204__" class="paragraph">
+<div id="__asciidoctor-preview-226__" class="paragraph">
 <p>Так как регистр специального назначения - это просто адресуемая ячейка памяти, то в коде это может
 мы можем обратиться к данным по этому адресу, разыменовывая указатель, указывающий на этот адрес:</p>
 </div>
-<div id="__asciidoctor-preview-205__" class="listingblock">
+<div id="__asciidoctor-preview-227__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main()
 {
@@ -1382,7 +1494,7 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-206__" class="colist arabic">
+<div id="__asciidoctor-preview-228__" class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
@@ -1397,24 +1509,24 @@ auto value = *ptr ; <i class="conum" data-value="2"></i><b>(2)</b></code></pre>
 </div>
 <div class="sect2">
 <h3 id="_работа_с_регистрами_периферии_через_обертку_на_с">Работа с регистрами периферии через обертку на С++</h3>
-<div id="__asciidoctor-preview-209__" class="openblock notes">
+<div id="__asciidoctor-preview-231__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-210__" class="paragraph">
+<div id="__asciidoctor-preview-232__" class="paragraph">
 <p>Для того, чтобы настроить определенное периферийное устройство процессора, необходимо изменить
 значение поля соответствующем регистре.</p>
 </div>
-<div id="__asciidoctor-preview-211__" class="paragraph">
+<div id="__asciidoctor-preview-233__" class="paragraph">
 <p>Для более удобной работы с регистрами можно использовать С++ обертку. Эта обертка позволяет обращаться
 к регистрам в форме очень похоже с тем, как эти регистры описаны в документации.</p>
 </div>
-<div id="__asciidoctor-preview-212__" class="paragraph">
+<div id="__asciidoctor-preview-234__" class="paragraph">
 <p>Так, например, для запуска внешнего источника частоты, необходимо обратиться к регистру “CR”
 периферии “RCC”, полю HSEON и установить в нем значение Enable.
 Операция обращения к регистру выглядит следующим образом:</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-213__" class="listingblock">
+<div id="__asciidoctor-preview-235__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">---
 int main()
@@ -1433,14 +1545,14 @@ int main()
 </div>
 <div class="sect2">
 <h3 id="_некоторые_моменты_при_работе_с_оберткой_с_для_регистров">Некоторые моменты при работе с оберткой С++ для регистров</h3>
-<div id="__asciidoctor-preview-214__" class="openblock notes">
+<div id="__asciidoctor-preview-236__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-215__" class="paragraph">
+<div id="__asciidoctor-preview-237__" class="paragraph">
 <p>Код для регистров был сгенерирован автоматически, см <a href="#13">[13]</a>. Поэтому по умолчанию все значения полей
 называются в формате ValueX, где Х-само значение. Поэтому тот момент когда нужно их использовать,
 нужно заглянуть в документацию и поменять слова Value, на что-то более внятное.</p>
 </div>
-<div id="__asciidoctor-preview-216__" class="paragraph">
+<div id="__asciidoctor-preview-238__" class="paragraph">
 <p>Для того, чтобы найти место где объявляется значение поля, необходимо правой мышкой нажать на значении
 и найти все его объявления.</p>
 </div>
@@ -1452,65 +1564,170 @@ int main()
 </div>
 <div class="title">Figure 8. Поиск места объявления значения</div>
 </div>
-<div id="__asciidoctor-preview-217__" class="openblock notes">
+<div id="__asciidoctor-preview-239__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-218__" class="paragraph">
+<div id="__asciidoctor-preview-240__" class="paragraph">
 <p>На самом деле, все значения полей определены в файлах, которые лежат в папке:
 AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
-</div>
-</div>
-<div id="__asciidoctor-preview-219__" class="paragraph">
+<div id="__asciidoctor-preview-241__" class="paragraph">
 <p>Можно открыть файл с именем [имя периферии]filedvalues.hpp и найти там структуру названием
 ИМЯ ПЕРИФЕРИ_ИМЯ РЕГИСТРА_ИМЯ ПОЛЯ_Values.</p>
 </div>
-<div id="__asciidoctor-preview-220__" class="paragraph">
+<div id="__asciidoctor-preview-242__" class="paragraph">
 <p>Например, для значений поля HSEON модуля периферии RCC, регистра CR, необходимо:</p>
 </div>
-<div id="__asciidoctor-preview-221__" class="olist arabic">
+</div>
+</div>
+<div id="__asciidoctor-preview-243__" class="olist arabic">
 <ol class="arabic">
-<li id="__asciidoctor-preview-222__">
+<li id="__asciidoctor-preview-244__">
 <p>открыть файл AbstractHardware\Registers\STM32F411\FieldValues\rccfieldvalues.hpp,</p>
 </li>
-<li id="__asciidoctor-preview-223__">
+<li id="__asciidoctor-preview-245__">
 <p>найти структуру struct RCC_CR_HSEON_Values</p>
 </li>
-<li id="__asciidoctor-preview-224__">
-<p>поменять в этой стурутуре <strong>Value0</strong> на <strong>Disable</strong>, а <strong>Value1</strong> на <strong>Enable</strong>.</p>
+<li id="__asciidoctor-preview-246__">
+<p>поменять в этой структуре <strong>Value0</strong> на <strong>Disable</strong>, а <strong>Value1</strong> на <strong>Enable</strong>.</p>
 </li>
 </ol>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_операторы">Операторы</h3>
-<div id="__asciidoctor-preview-225__" class="ulist">
+<h3 id="_тест">тест</h3>
+<div id="__asciidoctor-preview-247__" class="literalblock">
+<div class="content">
+<pre>                   +-------------+
+                   | Asciidoctor |-------+
+                   |   diagram   |       |
+                   +-------------+       | PNG out
+                       ^                 |
+                       | ditaa in        |
+                       |                 v
+ +--------+   +--------+----+    /---------------\
+ |        | --+ Asciidoctor +--&gt; |               |
+ |  Text  |   +-------------+    |   Beautiful   |
+ |Document|   |   !magic!   |    |    Output     |
+ |     {d}|   |             |    |               |
+ +---+----+   +-------------+    \---------------/
+     :                                   ^
+     |          Lots of work             |
+     +-----------------------------------+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_соглашение_об_вызовах">Соглашение об вызовах</h2>
+<div class="sectionbody">
+<div id="__asciidoctor-preview-248__" class="paragraph">
+<p>Соглашение об вызовах включает в себя:
+* Объявление функции
+* Компоновка С и С++ кода
+* Последовательность использования оперативных регистров и вспомогательные регистров
+* Вход в функцию
+* Выход из функции
+* Обработка адреса возврата</p>
+</div>
+<div class="sect2">
+<h3 id="_объявление_функции">Объявление функции</h3>
+<div id="__asciidoctor-preview-249__" class="paragraph">
+<p>Функция должна быть объявлена в таком порядке, чтобы компилятор мог узнать как её вызвать.
+Объявление функции может выглядеть следующим образом:</p>
+</div>
+<div id="__asciidoctor-preview-250__" class="exampleblock">
+<div class="content">
+<div id="__asciidoctor-preview-251__" class="paragraph">
+<p>int MyFunction(int first, char * second);</p>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-252__" class="paragraph">
+<p>Все что знает об этой функции компилятор, это то, что она принимает два параметра: целое и указатель
+на символ. И функция должна вернуть целое значение. Этого достаточно для компилятора, чтобы понять
+как вызвать эту функцию.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_компоновка_с_и_с_кода">Компоновка С и С++ кода</h3>
+<div id="__asciidoctor-preview-253__" class="paragraph">
+<p>В C+ , функция может компоноваться либо как С +, либо как С функция. Пример объявления функции
+с Си компоновкой:</p>
+</div>
+<div id="__asciidoctor-preview-254__" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="c" class="language-c hljs">extern "C" {
+  int F(int);
+}</code></pre>
+</div>
+</div>
+<div id="__asciidoctor-preview-255__" class="paragraph">
+<p>Если вы хотите вызвать функции ассемблера из С++, то лучше объявить эту функцию, как имеющую тип
+компоновки Си</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_вход_в_функцию">Вход в функцию</h3>
+<div id="__asciidoctor-preview-256__" class="paragraph">
+<p>Параметры передающие в функцию могут использовать два метода:</p>
+</div>
+<div id="__asciidoctor-preview-257__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-226__">
+<li id="__asciidoctor-preview-258__">
+<p>Через регистры</p>
+</li>
+<li id="__asciidoctor-preview-259__">
+<p>Через стек</p>
+</li>
+</ul>
+</div>
+<div id="__asciidoctor-preview-260__" class="paragraph">
+<p>Для большей эффективности параметры передаются через регистры, но их число ограничено, поэтому
+если регистров не хватает, то используется стек. Для передачи параметров используются
+оперативные регистры <strong>R0:R3</strong></p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_выход_из_функции">Выход из функции</h3>
+<div id="__asciidoctor-preview-261__" class="paragraph">
+<p>Функция может вернуть значение. Для возврата значения используются регистры <strong>R0:R1</strong>. Если значение
+больше 64 бит, то в регистр R0 записывается адрес где лежат данные.</p>
+</div>
+<div id="__asciidoctor-preview-262__" class="paragraph">
+<p>Вызывающая функция обязана очистить стек, после того, как вызываемая функция вернула значение.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_операторы">Операторы</h3>
+<div id="__asciidoctor-preview-263__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-264__">
 <p>Арифметические операторы</p>
 </li>
-<li id="__asciidoctor-preview-227__">
+<li id="__asciidoctor-preview-265__">
 <p>Операторы сравнения</p>
 </li>
-<li id="__asciidoctor-preview-228__">
+<li id="__asciidoctor-preview-266__">
 <p>Логические операторы</p>
 </li>
-<li id="__asciidoctor-preview-229__">
+<li id="__asciidoctor-preview-267__">
 <p>Побитовые операторы</p>
 </li>
-<li id="__asciidoctor-preview-230__">
+<li id="__asciidoctor-preview-268__">
 <p>Составное присваивание</p>
 </li>
-<li id="__asciidoctor-preview-231__">
+<li id="__asciidoctor-preview-269__">
 <p>Операторы работы с указателями и членами класса</p>
 </li>
-<li id="__asciidoctor-preview-232__">
+<li id="__asciidoctor-preview-270__">
 <p>Функторы, тернарные операции, sizeof(), запятая, приведение типа, new</p>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-233__" class="openblock notes">
+<div id="__asciidoctor-preview-271__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-234__" class="paragraph">
+<div id="__asciidoctor-preview-272__" class="paragraph">
 <p>Все операторы можно переопределить</p>
 </div>
 </div>
@@ -1518,9 +1735,9 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_арифметические_операторы">Арифметические операторы</h3>
-<div id="__asciidoctor-preview-235__" class="openblock notes">
+<div id="__asciidoctor-preview-273__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-236__" class="paragraph">
+<div id="__asciidoctor-preview-274__" class="paragraph">
 <p>Арифметические операторы предоставляют базовые арифметические действия над типами, такие как
 сложение, вычитание, деление, умножение, остаток от деления, присваивание. Любой оператор
 может быть определен для множества пользовательского типа. Т.е. вы можете создать свой тип и определить
@@ -1530,7 +1747,7 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 </div>
 </div>
-<table id="__asciidoctor-preview-237__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-275__" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. Арифметические операторы</caption>
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1600,15 +1817,15 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_логические_операторы">Логические операторы</h3>
-<div id="__asciidoctor-preview-271__" class="openblock notes">
+<div id="__asciidoctor-preview-309__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-272__" class="paragraph">
+<div id="__asciidoctor-preview-310__" class="paragraph">
 <p>Логические операторы предоставляют действия над булевым типов. Результат действия этих операторов
 может быть только <strong>true</strong> или <strong>false</strong></p>
 </div>
 </div>
 </div>
-<table id="__asciidoctor-preview-273__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-311__" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 4. Логические операторы</caption>
 <colgroup>
 <col style="width: 21.0526%;">
@@ -1648,14 +1865,14 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_побитовые_операторы">Побитовые операторы</h3>
-<div id="__asciidoctor-preview-290__" class="openblock notes">
+<div id="__asciidoctor-preview-328__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-291__" class="paragraph">
+<div id="__asciidoctor-preview-329__" class="paragraph">
 <p>Побитовые операторы предоставляют действия с битами.</p>
 </div>
 </div>
 </div>
-<table id="__asciidoctor-preview-292__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-330__" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. Побитовые операторы</caption>
 <colgroup>
 <col style="width: 21.0526%;">
@@ -1716,7 +1933,7 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 <div class="sect1">
 <h2 id="_отладочная_плата">Отладочная плата</h2>
 <div class="sectionbody">
-<table id="__asciidoctor-preview-321__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-359__" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -1840,7 +2057,7 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </tr>
 </tbody>
 </table>
-<div id="__asciidoctor-preview-338__" class="imageblock">
+<div id="__asciidoctor-preview-376__" class="imageblock">
 <div class="content">
 <img src="Lection2Img/Figure11.png" alt="300" width="300">
 </div>
@@ -1859,21 +2076,21 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_ядро_cortexm4">Ядро CortexM4</h3>
-<div id="__asciidoctor-preview-339__" class="imageblock">
+<div id="__asciidoctor-preview-377__" class="imageblock">
 <div class="content">
 <img src="Lection2Img/Figure12.png" alt="500" width="500">
 </div>
 <div class="title">Figure 11. Ядро CortexM4</div>
 </div>
-<div id="__asciidoctor-preview-340__" class="ulist">
+<div id="__asciidoctor-preview-378__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-341__">
+<li id="__asciidoctor-preview-379__">
 <p>Ядро Cortex построено по гарвардской архитектуре с разделением шины данных и кода. ​</p>
 </li>
-<li id="__asciidoctor-preview-342__">
+<li id="__asciidoctor-preview-380__">
 <p>Ядро Cortex-М4 поддерживает 8/16/32-разрядные операции умножения, которые выполняются за 1 цикл (деление со знаком (SDIV) или без (UDIV) занимает от 2 до 12 тактов в зависимости от размера операндов​</p>
 </li>
-<li id="__asciidoctor-preview-343__">
+<li id="__asciidoctor-preview-381__">
 <p>Ядро Cortex-М4 поддерживает 8/16/32-разрядные операции умножения со сложением​</p>
 </li>
 </ul>
@@ -1881,7 +2098,7 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_характеристики_ядра_cortexm4">Характеристики ядра CortexM4</h3>
-<table id="__asciidoctor-preview-344__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-382__" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
 <col style="width: 25%;">
@@ -1966,14 +2183,14 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_характеристики_микроконтроллера">Характеристики микроконтроллера</h3>
-<div id="__asciidoctor-preview-393__" class="openblock notes">
+<div id="__asciidoctor-preview-431__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-394__" class="paragraph">
+<div id="__asciidoctor-preview-432__" class="paragraph">
 <p>Микроконтроллер имеет следующие характеристики:</p>
 </div>
 </div>
 </div>
-<table id="__asciidoctor-preview-395__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-433__" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2144,14 +2361,14 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_блок_диаграмма_микроконтроллера">Блок диаграмма микроконтроллера</h3>
-<div id="__asciidoctor-preview-416__" class="openblock notes">
+<div id="__asciidoctor-preview-454__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-417__" class="paragraph">
+<div id="__asciidoctor-preview-455__" class="paragraph">
 <p>Блок схема микроконтроллера схематично изображена на рисунке <a href="#_блок_диаграмма_микроконтроллера">Блок диаграмма микроконтроллера</a>.</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-418__" class="imageblock">
+<div id="__asciidoctor-preview-456__" class="imageblock">
 <div class="content">
 <img src="Lection2Img/Figure8.png" alt="500" width="500">
 </div>
@@ -2160,45 +2377,54 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_дополнительные_особенности_микроконтроллера">Дополнительные особенности микроконтроллера</h3>
-<div id="__asciidoctor-preview-419__" class="openblock notes">
+<div id="__asciidoctor-preview-457__" class="openblock notes">
 <div class="content">
-<div id="__asciidoctor-preview-420__" class="paragraph">
+<div id="__asciidoctor-preview-458__" class="paragraph">
 <p>Из дополнительных особенностей, которые понадобятся для лабораторных работ следует выделить:</p>
 </div>
 </div>
 </div>
-<div id="__asciidoctor-preview-421__" class="ulist">
+<div id="__asciidoctor-preview-459__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-422__">
+<li id="__asciidoctor-preview-460__">
 <p>Настраиваемые источники тактовой частоты</p>
 </li>
-<li id="__asciidoctor-preview-423__">
+<li id="__asciidoctor-preview-461__">
 <p>Настраиваемые на различные функции порты</p>
 </li>
-<li id="__asciidoctor-preview-424__">
+<li id="__asciidoctor-preview-462__">
 <p>Внутренний температурный сенсор</p>
 </li>
-<li id="__asciidoctor-preview-425__">
+<li id="__asciidoctor-preview-463__">
 <p>Таймеры с настраиваемым модулем ШИМ</p>
 </li>
-<li id="__asciidoctor-preview-426__">
+<li id="__asciidoctor-preview-464__">
 <p>DMA для работы с модулями (SPI, UART, ADC… )</p>
 </li>
-<li id="__asciidoctor-preview-427__">
+<li id="__asciidoctor-preview-465__">
 <p>12 разрядный ADC последовательного приближения</p>
 </li>
-<li id="__asciidoctor-preview-428__">
+<li id="__asciidoctor-preview-466__">
 <p>Часы реального времени</p>
 </li>
-<li id="__asciidoctor-preview-429__">
+<li id="__asciidoctor-preview-467__">
 <p>Системный таймер и спец. прерывания для облегчения и ускорения  работы ОСРВ</p>
 </li>
 </ul>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_система_тактирования">Система тактирования</h3>
-<table id="__asciidoctor-preview-430__" class="tableblock frame-all grid-all stretch">
+</div>
+</div>
+<div class="sect1">
+<h2 id="_система_тактирования">Система тактирования</h2>
+<div class="sectionbody">
+
+</div>
+</div>
+<div class="sect1">
+<h2 id="_блок_диаграмма_системы_тактирования">Блок диаграмма системы тактирования</h2>
+<div class="sectionbody">
+<table id="__asciidoctor-preview-468__" class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -2248,39 +2474,38 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </tr>
 </tbody>
 </table>
-</div>
 <div class="sect2">
-<h3 id="_система_тактирования_2">Система тактирования</h3>
-<div id="__asciidoctor-preview-433__" class="paragraph">
+<h3 id="_модуль_тактирования">Модуль тактирования.</h3>
+<div id="__asciidoctor-preview-471__" class="paragraph">
 <p>Модуль тактирования (Reset and Clock Control) RCC</p>
 </div>
-<div id="__asciidoctor-preview-434__" class="ulist">
+<div id="__asciidoctor-preview-472__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-435__">
+<li id="__asciidoctor-preview-473__">
 <p>Для формирования системной тактовой частоты SYSCLK могут использоваться 4 основных источника:​</p>
-<div id="__asciidoctor-preview-436__" class="ulist">
+<div id="__asciidoctor-preview-474__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-437__">
+<li id="__asciidoctor-preview-475__">
 <p>HSI (high-speed internal) — внутренний высокочастотный RC-генератор.​</p>
 </li>
-<li id="__asciidoctor-preview-438__">
+<li id="__asciidoctor-preview-476__">
 <p>HSE (high-speed external) — внешний высокочастотный генератор.​</p>
 </li>
-<li id="__asciidoctor-preview-439__">
+<li id="__asciidoctor-preview-477__">
 <p>PLL — система ФАПЧ. Точнее сказать, это вовсе и не генератор, а набор из умножителей и делителей,
 исходный сигнал он получает от HSI или HSE, а на выходе у него уже другая частота.​</p>
 </li>
 </ul>
 </div>
 </li>
-<li id="__asciidoctor-preview-440__">
+<li id="__asciidoctor-preview-478__">
 <p>Также имеются 2 вторичных источника тактового сигнала:​</p>
-<div id="__asciidoctor-preview-441__" class="ulist">
+<div id="__asciidoctor-preview-479__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-442__">
+<li id="__asciidoctor-preview-480__">
 <p>LSI (low-speed internal) — низкочастотный внутренний RC-генератор на 37 кГц​</p>
 </li>
-<li id="__asciidoctor-preview-443__">
+<li id="__asciidoctor-preview-481__">
 <p>LSE (low-speed external) — низкочастотный внешний источник на 32,768 кГц​</p>
 </li>
 </ul>
@@ -2291,30 +2516,641 @@ AbstractHardware\Registers\STM32F411\FieldValues</p>
 </div>
 <div class="sect2">
 <h3 id="_фазовая_подстройка_частоты_pll">Фазовая подстройка частоты PLL</h3>
-<div id="__asciidoctor-preview-444__" class="ulist">
+<div id="__asciidoctor-preview-482__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-445__">
+<li id="__asciidoctor-preview-483__">
 <p>PLL ​Внутренний источник PLL тактируется от внешнего или внутреннего высокочастотных генераторов (HSE либо HSI). ​</p>
-<div id="__asciidoctor-preview-446__" class="ulist">
+<div id="__asciidoctor-preview-484__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-447__">
-<p>С помощью регистров PLLM, PLLN,PLLP можно подобрать любую частоту до 100 Мгц включительно по формуле:​
-f = f(PLL clock input) × (PLLN / PLLM) /PLLP​</p>
-</li>
-<li id="__asciidoctor-preview-448__">
-<p>Кроме системной тактовой частоты SYSCLK, также выдает частоту 48 МГц для интерфейса USB.
-При использовании USB входная частота для PLL должна быть в диапазоне от 2 МГц до 24 МГц.​
-f(USB) = f(PLL clock input) × (PLLN / PLLM) / PLLQ​</p>
+<li id="__asciidoctor-preview-485__">
+<p>С помощью регистров PLLM, PLLN,PLLP можно подобрать любую частоту до 100 Мгц включительно по формуле:​</p>
 </li>
 </ul>
 </div>
 </li>
 </ul>
 </div>
-<div id="__asciidoctor-preview-449__" class="stemblock">
+<div id="__asciidoctor-preview-486__" class="exampleblock">
 <div class="content">
-\$sqrt(4) = 2\$
+<div id="__asciidoctor-preview-487__" class="literalblock">
+<div class="content">
+<pre>f = f(PLL clock input) × (PLLN / PLLM) /PLLP​</pre>
 </div>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-488__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-489__">
+<p>Кроме системной тактовой частоты SYSCLK, PLL также выдает частоту 48 МГц для интерфейса USB.
+При использовании USB входная частота для PLL должна быть в диапазоне от 2 МГц до 24 МГц.​</p>
+</li>
+</ul>
+</div>
+<div id="__asciidoctor-preview-490__" class="exampleblock">
+<div class="content">
+<div id="__asciidoctor-preview-491__" class="literalblock">
+<div class="content">
+<pre>f(USB) = f(PLL clock input) × (PLLN / PLLM) / PLLQ​</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_дополнительные_генераторы_тактовой_частоты">Дополнительные генераторы тактовой частоты​</h3>
+<div id="__asciidoctor-preview-492__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-493__">
+<p>LSE. Низкочастотный внешний генератор частоты.​</p>
+<div id="__asciidoctor-preview-494__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-495__">
+<p>Применение внешнего кварцевого/керамического резонатора на 32,768 кГц на входах OSC32_IN, OSC32_OUT.
+Высокостабильный источник, формирует тактовые сигналы для часов реального времени RTC, модуля ЖКИ,
+а также для таймеров TIM9/TIM10/TIM11.​</p>
+</li>
+<li id="__asciidoctor-preview-496__">
+<p>Использование внешнего источника тактовой частоты (режим LSE bypass). Формируются тактовые
+сигналы для часов реального времени и ЖКИ. В этом режиме исходный сигнал поступает с генератора HSE.
+Входная частота может быть до 1 МГц, затем сигнал проходит через делитель с коэффициентом деления 2,
+ 4, 8 или 16. Входной сигнал может быть прямоугольной, треугольной формы или синусоидой с 50% скважностью.​</p>
+</li>
+</ul>
+</div>
+</li>
+<li id="__asciidoctor-preview-497__">
+<p>LSI. Внутренний RC-генератор частотой около 37 кГц.</p>
+<div id="__asciidoctor-preview-498__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-499__">
+<p>Как и LSE, позволяет тактировать часы реального времени и модуль ЖКИ. Кроме этого, поддерживает
+работоспособность независимого сторожевого таймера IWDG в режимах Stop и Standby.​</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_регистр_управления_частотой">Регистр управления частотой.</h3>
+<div id="__asciidoctor-preview-500__" class="openblock notes">
+<div class="content">
+<div id="__asciidoctor-preview-501__" class="paragraph">
+<p>Clock Control register (CR​)
+Как уже упоминалось, системная тактовая частота для серии "STM32F411" может быть до 100 МГц. Для ее
+формирования используются 3 основных источника — HSI, HSE, PLL. Включение и выключение основных
+генераторов производится через регистр RCC_CR — Clock Control register.</p>
+</div>
+<div id="__asciidoctor-preview-502__" class="paragraph">
+<p>Значение по умолчанию: 0x0000 XX81:​</p>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-503__" class="imageblock">
+<div class="content">
+<img src="Lection2Img/Figure14.png" alt="800" width="700">
+</div>
+</div>
+<div id="__asciidoctor-preview-504__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 24 PLLON
+</td>
+<td class="hdlist2">
+<p>Включить PLL. Этот бит устанавливается и скидывается программно, чтобы включить PLL.
+Бит не может быть скинут, если PLL уже используется как системная частота. ​</p>
+<div id="__asciidoctor-preview-507__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-508__">
+<p><strong>0</strong>: ОТКЛЮЧИТЬ PLL <strong>1</strong>: ВКЛЮЧИТЬ PLL​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-509__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 16: HSEON
+</td>
+<td class="hdlist2">
+<p>Включить HSE. Этот бит устанавливается и скидывается программно.  Бит не может быть
+скинут, если HSE уже используется как системная частота. ​</p>
+<div id="__asciidoctor-preview-512__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-513__">
+<p><strong>0</strong>: ОТЛЮЧИТЬ HSE  <strong>1</strong>: ВКЛЮЧИТЬ HSE ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-514__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 0: HSION
+</td>
+<td class="hdlist2">
+<p>Включить HSI. Этот бит устанавливается и скидывается программно. Очищается аппаратно
+при входе в режим Stop или Standby.  Бит не может быть скинут, если HSI уже используется как системная частота. ​</p>
+<div id="__asciidoctor-preview-517__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-518__">
+<p><strong>0</strong>: ВЫКЛЮЧИТЬ HSI <strong>1</strong>: ВКЛЮЧИТЬ HSI ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_регистр_управления_частотой_контроль">Регистр управления частотой. Контроль</h3>
+<div id="__asciidoctor-preview-519__" class="openblock notes">
+<div class="content">
+<div id="__asciidoctor-preview-520__" class="paragraph">
+<p>Сразу после установки частоты, нужно проверить, что частота с нового источника стабилизировалась. Для
+этого используются те же поля того же регистра CR, оканчивающиеся на RDY (Ready)</p>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-521__" class="imageblock">
+<div class="content">
+<img src="Lection2Img/Figure14.png" alt="600" width="600">
+</div>
+</div>
+<div id="__asciidoctor-preview-522__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 25 PLLRDY
+</td>
+<td class="hdlist2">
+<p>Флаг готовности частоты PLL. Этот бит устанавливается аппаратно ​</p>
+<div id="__asciidoctor-preview-525__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-526__">
+<p><strong>0</strong>: PLL НЕ  ЗАПУЩЕН И  НЕ ИСПОЛЬЗУЕТСЯ <strong>1</strong>: PLL ИСПОЛЬЗУЕТСЯ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-527__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 17: HSERDY
+</td>
+<td class="hdlist2">
+<p>Флаг готовности частоты  HSE. Этот бит устанавливается аппаратно. ​</p>
+<div id="__asciidoctor-preview-530__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-531__">
+<p><strong>0</strong>: HSE НЕ ГОТОВ <strong>1</strong>: HSE ГОТОВ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-532__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bit 1: HSIRDY
+</td>
+<td class="hdlist2">
+<p>Флаг готовности частоты  HSI. Этот бит устанавливается аппаратно​</p>
+<div id="__asciidoctor-preview-535__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-536__">
+<p><strong>0</strong>: HSI НЕ ГОТОВ <strong>1</strong>: HSI ГОТОВ ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_регистр_конфигурации_частоты_выбор_источника">Регистр конфигурации частоты. Выбор источника</h3>
+<div id="__asciidoctor-preview-537__" class="openblock notes">
+<div class="content">
+<div id="__asciidoctor-preview-538__" class="paragraph">
+<p>После включения генераторов частоты, необходимо выбрать один из них в качестве источника для системной
+частоты SYSCLK. Выбор осуществляется через регистр RCC_CFGR — Clock Configuration Register.
+Значение по умолчанию: 0x0000 0000​</p>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-539__" class="imageblock">
+<div class="content">
+<img src="Lection2Img/Figure14.png" alt="600" width="600">
+</div>
+</div>
+<div id="__asciidoctor-preview-540__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bits 3:2 SWS[1:0]
+</td>
+<td class="hdlist2">
+<p>Статус частоты SYSCLK. ​</p>
+<div id="__asciidoctor-preview-543__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-544__">
+<p><strong>00</strong>: ИСТОЧНИК ЧАСТОТЫ HSI <strong>01</strong>: ИСТОЧНИК ЧАСТОТЫ HSE</p>
+</li>
+<li id="__asciidoctor-preview-545__">
+<p><strong>10</strong>: ИСТОЧНИК ЧАСТОТЫ PLL <strong>11</strong>:  РЕЗЕРВ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-546__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bits 1:0 SW[1:0]
+</td>
+<td class="hdlist2">
+<p>Выбор источника частоты SYSCLK. ​</p>
+<div id="__asciidoctor-preview-549__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-550__">
+<p><strong>00</strong>: HSI  <strong>01</strong>: HSE</p>
+</li>
+<li id="__asciidoctor-preview-551__">
+<p><strong>10</strong>: PLL  <strong>11</strong>: НЕ ИСПОЛЬЗУЕТСЯ</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_регистр_конфигурации_частоты_делители">Регистр конфигурации частоты. Делители</h3>
+<div id="__asciidoctor-preview-552__" class="paragraph">
+<p>Следующие секции регистра HPRE (AHB prescaler), PPRE1 (APB1 prescaler), PPRE2 (APB2 prescaler) —
+задают коэффициенты деления системной частоты SYSCLK, которая после предделителей поступает на
+матрицы шин. ​</p>
+</div>
+<div id="__asciidoctor-preview-553__" class="openblock notes">
+<div class="content">
+<div id="__asciidoctor-preview-554__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+AHB (Advanced High Speed Busses)
+</td>
+<td class="hdlist2">
+<p>матрица высокоскоростных шин. Она "доставляет" сигналы
+тактирования к ядру микроконтроллера, памяти (это как FLASH, так EEPROM и RAM) и модулю DMA
+Direct Memory Access — модуль прямого доступа к памяти), системному таймеру. Также, в семействе
+STM32F4 на эту шину "посажены" и все порты ввода/вывода GPIO .</p>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-557__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+APB1, APB2 (Advanced Peripheral Bussess)
+</td>
+<td class="hdlist2">
+<p>матрицы шин периферии. Соотвественно, к остальным
+периферийным модулям тактовая частота распределяется уже через эти шины. ​</p>
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div id="__asciidoctor-preview-560__" class="imageblock">
+<div class="content">
+<img src="Lection2Img/Figure14.png" alt="600" width="600">
+</div>
+</div>
+<div id="__asciidoctor-preview-561__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bits 13:11 PPRE2[2:0]
+</td>
+<td class="hdlist2">
+<p>Делитель частоты шины APB2. Это устанавливается и очищается программно. ​</p>
+<div id="__asciidoctor-preview-564__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-565__">
+<p><strong>0xx</strong>: AHB      <strong>100</strong>: AHB/2     <strong>101</strong>: AHB/4     <strong>110</strong>: AHB/8    <strong>111</strong>: AHB/16 ​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-566__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bits 10:8 PPRE1[2:0]
+</td>
+<td class="hdlist2">
+<p>Делитель частоты шины APB1 Это устанавливается и очищается программно. ​</p>
+<div id="__asciidoctor-preview-569__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-570__">
+<p><strong>0xx</strong>: AHB     <strong>100</strong>: AHB/2      <strong>101</strong>: AHB/4     <strong>110</strong>: AHB/8     <strong>111</strong>: AHB/16​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+<div id="__asciidoctor-preview-571__" class="hdlist">
+<table>
+<tr>
+<td class="hdlist1">
+Bits 7:4 HPRE[3:0]
+</td>
+<td class="hdlist2">
+<p>Делитель частоты шины AHB. ​</p>
+<div id="__asciidoctor-preview-574__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-575__">
+<p><strong>0xxx</strong>: SYSCLK    <strong>1000</strong>: SYSCLK/2     <strong>1001</strong>: SYSCLK/4     <strong>1010</strong>: SYSCLK/8     <strong>1011</strong>: SYSCLK/16
+  ​
+<strong>1100</strong>: SYSCLK/64  <strong>1101</strong>: SYSCLK/128  <strong>1110</strong>: SYSCLK/256   <strong>1111</strong>: SYSCLK/512​</p>
+</li>
+</ul>
+</div>
+</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_алгоритм_настройки_частоты">Алгоритм настройки частоты​</h3>
+<div id="__asciidoctor-preview-576__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-577__">
+<p>Определить какие источники частоты нужны​</p>
+<div id="__asciidoctor-preview-578__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-579__">
+<p>Например, PLL нужен для USB​</p>
+</li>
+</ul>
+</div>
+</li>
+<li id="__asciidoctor-preview-580__">
+<p>Включить нужный источник​</p>
+<div id="__asciidoctor-preview-581__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-582__">
+<p>Используя Clock Control register (RCC::CR)​</p>
+</li>
+</ul>
+</div>
+</li>
+<li id="__asciidoctor-preview-583__">
+<p>Дождаться стабилизации источника ​</p>
+<div id="__asciidoctor-preview-584__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-585__">
+<p>Используя соответствующие биты (..RDY) Clock Control register ​(RCC::CR)</p>
+</li>
+</ul>
+</div>
+</li>
+<li id="__asciidoctor-preview-586__">
+<p>Назначить нужный источник на системную частоту​</p>
+<div id="__asciidoctor-preview-587__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-588__">
+<p>Используя Clock Configuration Register (RCC::CFGR)​</p>
+</li>
+</ul>
+</div>
+</li>
+<li id="__asciidoctor-preview-589__">
+<p>Дождаться пока источник не переключиться на системную частоту​</p>
+<div id="__asciidoctor-preview-590__" class="ulist">
+<ul>
+<li id="__asciidoctor-preview-591__">
+<p>Используя Clock Configuration Register (RCC::CFGR)​</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_контрольные_вопросы">Контрольные вопросы</h2>
+<div class="sectionbody">
+<div id="__asciidoctor-preview-592__" class="olist arabic">
+<ol class="arabic">
+<li id="__asciidoctor-preview-593__">
+<p>Что такое POD типы данных?</p>
+</li>
+<li id="__asciidoctor-preview-594__">
+<p>Назовите все виды типов в языке С++</p>
+</li>
+<li id="__asciidoctor-preview-595__">
+<p>Что такое пользовательский тип?</p>
+</li>
+<li id="__asciidoctor-preview-596__">
+<p>Назовите модификаторы типов.</p>
+</li>
+<li id="__asciidoctor-preview-597__">
+<p>Назовите правило установки размеров типов</p>
+</li>
+<li id="__asciidoctor-preview-598__">
+<p>Что делает оператор sizeof()?</p>
+</li>
+<li id="__asciidoctor-preview-599__">
+<p>Что характеризует тип std::size_t</p>
+</li>
+<li id="__asciidoctor-preview-600__">
+<p>Назовите фиксированные типы целых в библиотеке std</p>
+</li>
+<li id="__asciidoctor-preview-601__">
+<p>Что такое псевдоним типа?</p>
+</li>
+<li id="__asciidoctor-preview-602__">
+<p>Что такое явное и неявное преобразование типа?</p>
+</li>
+<li id="__asciidoctor-preview-603__">
+<p>Какие явные преобразования типов вы знаете?</p>
+</li>
+<li id="__asciidoctor-preview-604__">
+<p>Что делает reinterpret_cast?</p>
+</li>
+<li id="__asciidoctor-preview-605__">
+<p>Чем static_cast отличается от reinterpret_cast?</p>
+</li>
+<li id="__asciidoctor-preview-606__">
+<p>Что такое ОЗУ и ПЗУ?</p>
+</li>
+<li id="__asciidoctor-preview-607__">
+<p>Каков размер памяти ARM Cortex микроконтроллеров.</p>
+</li>
+<li id="__asciidoctor-preview-608__">
+<p>По какой архитектуре разработан ARM Cortex микроконтроллер?</p>
+</li>
+<li id="__asciidoctor-preview-609__">
+<p>В чем отличие Гарвардской архитектуры от Архитектура ФонНеймана?</p>
+</li>
+<li id="__asciidoctor-preview-610__">
+<p>Где располагаются локальные переменные?</p>
+</li>
+<li id="__asciidoctor-preview-611__">
+<p>Где располагаются статические переменные?</p>
+</li>
+<li id="__asciidoctor-preview-612__">
+<p>Где располагаются глобальные переменные?</p>
+</li>
+<li id="__asciidoctor-preview-613__">
+<p>Что такое стек?</p>
+</li>
+<li id="__asciidoctor-preview-614__">
+<p>Что такое указатель?</p>
+</li>
+<li id="__asciidoctor-preview-615__">
+<p>Что такое разыменовывание указателя?</p>
+</li>
+<li id="__asciidoctor-preview-616__">
+<p>Что означает взятие адреса?</p>
+</li>
+<li id="__asciidoctor-preview-617__">
+<p>Какие операции можно выполнять над указателями?</p>
+</li>
+<li id="__asciidoctor-preview-618__">
+<p>Что такое константный указатель?</p>
+</li>
+<li id="__asciidoctor-preview-619__">
+<p>Что такое указатель на константу?</p>
+</li>
+<li id="__asciidoctor-preview-620__">
+<p>Что такое ссылка? В чем её отличие от указателя?</p>
+</li>
+<li id="__asciidoctor-preview-621__">
+<p>Что такое регистр?</p>
+</li>
+<li id="__asciidoctor-preview-622__">
+<p>Что такое регистры общего назначения?</p>
+</li>
+<li id="__asciidoctor-preview-623__">
+<p>Что такое регистры специального назначения?</p>
+</li>
+<li id="__asciidoctor-preview-624__">
+<p>Как можно установить бит в регистре специального назначения?</p>
+</li>
+<li id="__asciidoctor-preview-625__">
+<p>Объясните как вызывается функция.</p>
+</li>
+<li id="__asciidoctor-preview-626__">
+<p>Что такое трансляция?</p>
+</li>
+<li id="__asciidoctor-preview-627__">
+<p>Что такое компоновка?</p>
+</li>
+<li id="__asciidoctor-preview-628__">
+<p>Как лучше организовывать структуру проекта и почему?</p>
+</li>
+<li id="__asciidoctor-preview-629__">
+<p>Что такое операторы?</p>
+</li>
+<li id="__asciidoctor-preview-630__">
+<p>Какие арифметические операторы вы знаете?</p>
+</li>
+<li id="__asciidoctor-preview-631__">
+<p>Какие логические операторы вы знаете?</p>
+</li>
+<li id="__asciidoctor-preview-632__">
+<p>Какие побитовые операторы вы знаете?</p>
+</li>
+<li id="__asciidoctor-preview-633__">
+<p>Приведите пример переопределения оператора</p>
+</li>
+<li id="__asciidoctor-preview-634__">
+<p>Какие еще операторы вы знаете?</p>
+</li>
+<li id="__asciidoctor-preview-635__">
+<p>Как сбросить бит с помощью битовых операторов?</p>
+</li>
+<li id="__asciidoctor-preview-636__">
+<p>Как установить бит с помощью битовых операторов?</p>
+</li>
+<li id="__asciidoctor-preview-637__">
+<p>Как поменять значение бита с помощью битовых операторов?</p>
+</li>
+<li id="__asciidoctor-preview-638__">
+<p>Какой микроконтроллер на отладочной плате XNUCLE ST32F411?</p>
+</li>
+<li id="__asciidoctor-preview-639__">
+<p>Какие блоки входят в состав микроконтроллера STM32F411?</p>
+</li>
+<li id="__asciidoctor-preview-640__">
+<p>В чем отличие ядра CortexM4 от CortexM3?</p>
+</li>
+<li id="__asciidoctor-preview-641__">
+<p>Назовите основные характеристики микроконтроллера STM32F411.</p>
+</li>
+<li id="__asciidoctor-preview-642__">
+<p>Назовите дополнительные характеристики микроконтроллера STM32F411.</p>
+</li>
+<li id="__asciidoctor-preview-643__">
+<p>Какие источники тактирования есть у микроконтроллера STM32F411</p>
+</li>
+<li id="__asciidoctor-preview-644__">
+<p>Назовите алгоритм подключения системной частоты к источнику тактирования микроконтроллера STM32F411.</p>
+</li>
+<li id="__asciidoctor-preview-645__">
+<p>Что такое ФАПЧ?</p>
+</li>
+<li id="__asciidoctor-preview-646__">
+<p>Что делает следующий код?</p>
+</li>
+</ol>
+</div>
+<div id="__asciidoctor-preview-647__" class="listingblock">
+<div class="content">
+<pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">int main()
+{
+  int StudentUdacha = 10;
+  int PrepodUdachca = 0 ;
+
+  StudentUdacha =  StudentUdacha ^ PrepodUdachca ;
+  PrepodUdachca =  StudentUdacha ^ PrepodUdachca ;
+  StudentUdacha ^= PrepodUdachca ;
+}</code></pre>
 </div>
 </div>
 </div>
@@ -2322,38 +3158,38 @@ f(USB) = f(PLL clock input) × (PLLN / PLLM) / PLLQ​</p>
 <div class="sect1">
 <h2 id="_задания">Задания</h2>
 <div class="sectionbody">
-<div id="__asciidoctor-preview-450__" class="paragraph">
+<div id="__asciidoctor-preview-648__" class="paragraph">
 <p>3 Задания, кто не успеет в лабораторной, завершить дома.</p>
 </div>
 <div class="sect2">
 <h3 id="_содержание_отчета">Содержание отчета</h3>
-<div id="__asciidoctor-preview-451__" class="ulist">
+<div id="__asciidoctor-preview-649__" class="ulist">
 <ul>
-<li id="__asciidoctor-preview-452__">
+<li id="__asciidoctor-preview-650__">
 <p>Описать процесс записи в регистр по его адресу</p>
 </li>
-<li id="__asciidoctor-preview-453__">
+<li id="__asciidoctor-preview-651__">
 <p>Описать полученный результат записи в регистры MODER и ODR</p>
 </li>
-<li id="__asciidoctor-preview-454__">
+<li id="__asciidoctor-preview-652__">
 <p>Описать процесс вызова функции в IAR</p>
 </li>
-<li id="__asciidoctor-preview-455__">
+<li id="__asciidoctor-preview-653__">
 <p>Описать регистры общего назначения для семейства Cortex-m4</p>
 </li>
-<li id="__asciidoctor-preview-456__">
+<li id="__asciidoctor-preview-654__">
 <p>Описать все виды источников тактирования параметры их настройки</p>
 </li>
-<li id="__asciidoctor-preview-457__">
+<li id="__asciidoctor-preview-655__">
 <p>Описать процесс получения заданной по варианту частоты тактирования</p>
 </li>
-<li id="__asciidoctor-preview-458__">
+<li id="__asciidoctor-preview-656__">
 <p>Описать ошибки, сделанные при выполнении работы</p>
 </li>
-<li id="__asciidoctor-preview-459__">
+<li id="__asciidoctor-preview-657__">
 <p>Ответить на контрольные вопросы</p>
 </li>
-<li id="__asciidoctor-preview-460__">
+<li id="__asciidoctor-preview-658__">
 <p>Сделать выводы</p>
 </li>
 </ul>
@@ -2361,17 +3197,17 @@ f(USB) = f(PLL clock input) × (PLLN / PLLM) / PLLQ​</p>
 </div>
 <div class="sect2">
 <h3 id="_задание_1">Задание 1</h3>
-<div id="__asciidoctor-preview-461__" class="olist arabic">
+<div id="__asciidoctor-preview-659__" class="olist arabic">
 <ol class="arabic">
-<li id="__asciidoctor-preview-462__">
+<li id="__asciidoctor-preview-660__">
 <p>Создать проект в соответствии с Заданием 1 Лекции 1</p>
 </li>
-<li id="__asciidoctor-preview-463__">
+<li id="__asciidoctor-preview-661__">
 <p>Написать программу в main.cpp</p>
 </li>
 </ol>
 </div>
-<div id="__asciidoctor-preview-464__" class="listingblock">
+<div id="__asciidoctor-preview-662__" class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight"><code data-lang="cpp" class="language-cpp hljs">#include "rccregisters.hpp"   //for RCC
 int main() {
@@ -2383,38 +3219,38 @@ int main() {
 }</code></pre>
 </div>
 </div>
-<div id="__asciidoctor-preview-465__" class="olist arabic">
+<div id="__asciidoctor-preview-663__" class="olist arabic">
 <ol class="arabic">
-<li id="__asciidoctor-preview-466__">
+<li id="__asciidoctor-preview-664__">
 <p>Открыть спецификацию на микроконтроллер <a href="https://www.st.com/resource/en/reference_manual/dm00119316.pdf#STM32F411">STM32F411</a>.
 на странице 38, узнать на каком адресе расположен модуль GPIOC, на странице 157, узнать смещение регистра
-GPIOС_MODER относительно адреса GPIOC и вычислить адрес регистра GPIOC_MODER</p>
+<strong>GPIOС_MODER</strong> относительно адреса <strong>GPIOC</strong> и вычислить адрес регистра <strong>GPIOC_MODER</strong></p>
 </li>
-<li id="__asciidoctor-preview-467__">
-<p>Записать по адресу регистра GPIOC_MODER биты номер 10,16,18 в 1, а биты номер 11,17,19 в 0.</p>
+<li id="__asciidoctor-preview-665__">
+<p>Записать по адресу регистра <strong>GPIOC_MODER</strong> биты номер 10,16,18 в 1, биты номер 11,17,19 в 0.</p>
 </li>
-<li id="__asciidoctor-preview-468__">
+<li id="__asciidoctor-preview-666__">
 <p>Открыть спецификацию на микроконтроллер <a href="https://www.st.com/resource/en/reference_manual/dm00119316.pdf#STM32F411">STM32F411</a>.
 на странице 38, узнать на каком адресе расположен модуль GPIOC, на странице 159, узнать смещение регистра
-GPIOС_ODR относительно адреса GPIOC и вычислить адрес регистра GPIOC_ODR</p>
+<strong>GPIOС_ODR</strong> относительно адреса <strong>GPIOC</strong> и вычислить адрес регистра <strong>GPIOC_ODR</strong></p>
 </li>
-<li id="__asciidoctor-preview-469__">
-<p>Записать по адресу регистра GPIOC_ODR биты номер 5,8,9 в 1</p>
+<li id="__asciidoctor-preview-667__">
+<p>Записать по адресу регистра <strong>GPIOC_ODR</strong> биты номер 5,8,9 в 1</p>
 </li>
-<li id="__asciidoctor-preview-470__">
-<p>Написать функцию задержки используя цикл void Delay(). И вызвать ей после установки битов</p>
+<li id="__asciidoctor-preview-668__">
+<p>Написать функцию задержки используя цикл <strong>void Delay()</strong>. И вызвать ей после установки битов</p>
 </li>
-<li id="__asciidoctor-preview-471__">
-<p>После задержки Записать по адресу регистра GPIOC_ODR биты номер 5,8,9 в 0</p>
+<li id="__asciidoctor-preview-669__">
+<p>После задержки Записать по адресу регистра <strong>GPIOC_ODR</strong> биты номер 5,8,9 в 0</p>
 </li>
-<li id="__asciidoctor-preview-472__">
+<li id="__asciidoctor-preview-670__">
 <p>Вызвать функцию сброса битов</p>
 </li>
-<li id="__asciidoctor-preview-473__">
+<li id="__asciidoctor-preview-671__">
 <p>Запустить программу, в пошаговой отладке в окне Register, посмотреть, что происходит с регистрами
-GPIOС_MODER и GPIOС_ODR.</p>
+<strong>GPIOС_MODER</strong> и <strong>GPIOС_ODR</strong>.</p>
 </li>
-<li id="__asciidoctor-preview-474__">
+<li id="__asciidoctor-preview-672__">
 <p>Посмотреть видео <a href="https://www.youtube.com/watch?v=hukr8ZqS5Ys" class="bare">https://www.youtube.com/watch?v=hukr8ZqS5Ys</a></p>
 </li>
 </ol>
@@ -2422,25 +3258,25 @@ GPIOС_MODER и GPIOС_ODR.</p>
 </div>
 <div class="sect2">
 <h3 id="_задание_2">Задание 2</h3>
-<div id="__asciidoctor-preview-475__" class="olist arabic">
+<div id="__asciidoctor-preview-673__" class="olist arabic">
 <ol class="arabic">
-<li id="__asciidoctor-preview-476__">
+<li id="__asciidoctor-preview-674__">
 <p>Создать указатель типа <strong>volatile int</strong>*, которая будет содержать адрес регистра GPIOC_MODER</p>
 </li>
-<li id="__asciidoctor-preview-477__">
+<li id="__asciidoctor-preview-675__">
 <p>Создать переменную типа <strong>int</strong> и записать туда значение, которое содержится по этому адресу</p>
 </li>
-<li id="__asciidoctor-preview-478__">
+<li id="__asciidoctor-preview-676__">
 <p>Запустить отладку, запустить окно Memory и проверить, что по этому адресу лежит это значение</p>
 </li>
-<li id="__asciidoctor-preview-479__">
+<li id="__asciidoctor-preview-677__">
 <p>В отладке открыть окно регистры и проверить, что значение регистра GPIOC_MODER, совпадает со значением
 в переменной типа <strong>int</strong></p>
 </li>
-<li id="__asciidoctor-preview-480__">
+<li id="__asciidoctor-preview-678__">
 <p>Проделать тоже самое с произвольным адресом в ОЗУ.</p>
 </li>
-<li id="__asciidoctor-preview-481__">
+<li id="__asciidoctor-preview-679__">
 <p>Посмотреть видео <a href="https://www.youtube.com/watch?v=M53lJlcFOZQ" class="bare">https://www.youtube.com/watch?v=M53lJlcFOZQ</a></p>
 </li>
 </ol>
@@ -2448,20 +3284,20 @@ GPIOС_MODER и GPIOС_ODR.</p>
 </div>
 <div class="sect2">
 <h3 id="_задание_3">Задание 3</h3>
-<div id="__asciidoctor-preview-482__" class="olist arabic">
+<div id="__asciidoctor-preview-680__" class="olist arabic">
 <ol class="arabic">
-<li id="__asciidoctor-preview-483__">
+<li id="__asciidoctor-preview-681__">
 <p>Ознакомиться с техническим описанием регистров тактирования микропроцессора</p>
 </li>
-<li id="__asciidoctor-preview-484__">
+<li id="__asciidoctor-preview-682__">
 <p>Произвести настройку тактирования микропроцессора по варианту см. <a href="#Варианты для системы тактирования">[Варианты для системы тактирования]</a></p>
 </li>
-<li id="__asciidoctor-preview-485__">
+<li id="__asciidoctor-preview-683__">
 <p>Выполнить пошаговую отладку</p>
 </li>
 </ol>
 </div>
-<table id="__asciidoctor-preview-486__" class="tableblock frame-all grid-all stretch">
+<table id="__asciidoctor-preview-684__" class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 6. Варианты для системы тактирования</caption>
 <colgroup>
 <col style="width: 33.3333%;">
