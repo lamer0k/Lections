@@ -3,7 +3,7 @@
 :highlighter-linenums-mode: inline
 
 :backend: revealjs
-:revealjs_theme: white
+:revealjs_theme: sky
 :revealjs_backgroundTransition: concave
 :revealjs_transition: convex
 :revealjs_display: table-cell
@@ -27,5 +27,7 @@ include::Introdaction.adoc[]
 include::Lection1.adoc[]
 
 include::Lection2.adoc[]
+
+include::Lection3.adoc[]
 
 include::biblio.adoc[]
