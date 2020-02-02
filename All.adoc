@@ -30,4 +30,8 @@ include::Lection2.adoc[]
 
 include::Lection3.adoc[]
 
+include::Lection5.adoc[]
+
+include::Lection6.adoc[]
+
 include::biblio.adoc[]
