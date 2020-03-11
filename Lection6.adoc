@@ -1,4 +1,4 @@
-== Лекция 6
+= Лекция 6
 :imagesdir: Lection6Img
 :stem:
 

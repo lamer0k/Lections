@@ -1,5 +1,5 @@
 
-== Лекция 1
+= Лекция 1
 
 :description: Лекция 1.
 :keywords: AsciiDoc
