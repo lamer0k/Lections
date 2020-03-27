@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<title>Untitled</title>
+<title>RML approach to design</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -438,278 +438,280 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="article">
 <div id="header">
+<h1>RML approach to design</h1>
 </div>
 <div id="content">
-<div class="paragraph text-center">
-<p>Южно-Уральский государственный университет (НИУ)
-Высшая школа электроники и компьютерных наук
-Кафедра «Информационно-измерительная техника»</p>
-</div>
-<div class="paragraph text-right">
-<p>УТВЕРЖДАЮ<br>
-Заведующий кафедрой<br>
-&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95; (А.П.Лапин)<br>
-&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95; 2018 г.</p>
-</div>
-<div class="paragraph text-center">
-<p><strong>ЗАДАНИЕ НА РАБОТУ</strong><br>
-на курсовую работу
-студентам:<br>
-группа: КЭ-463</p>
+<div class="sect1">
+<h2 id="_common_library">Common Library</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>Tne main idea of RMl is reuse common components in different projects:</p>
 </div>
 <div class="paragraph">
-<p>&#160;<br>
-&#160;<br>
-&#160;<br></p>
+<p>The Common Library consists common interfaces and implementation for:</p>
 </div>
-<div class="olist arabic text-left">
-<ol class="arabic">
-<li>
-<p><strong>Дисциплина:</strong> <strong><em>Программное обеспечение измерительных процессов.</em></strong></p>
-</li>
-<li>
-<p><strong>Тема работы:</strong> <strong><em>Разработка датчика бесконтактного измерения температуры с передачей параметров по беспроводному интерфейсу</em></strong></p>
-</li>
-<li>
-<p><strong>Требования к разработке:</strong></p>
 <div class="ulist">
 <ul>
 <li>
-<p>Для разработки должна использоваться отладочная плата <a href="https://www.waveshare.com/product/arduino-2/boards-kits/nucleo/xnucleo-f411re.htm">XNUCLEO-F411RE</a></p>
+<p>CortexM4 Hardware modules</p>
 </li>
 <li>
-<p>Питание платы должно быть автономным и подаваться с солнечный батарей</p>
+<p>Registers wrapper</p>
 </li>
 <li>
-<p>Программное обеспечение должно измерять температуру</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Период измерения должен быть 100 ms.</p>
+<p>Diagnostic</p>
 </li>
 <li>
-<p>К измеренной температуре должен быть применен цифровой фильтр вида:<br>
-\$tau = int  ((1-e^(-dt/(R*C)), RC &gt; 0 sec), (1, RC&lt;= 0 sec))\$<br>
-&#160;<br>
-\$"FilteredValue" = "OldFiltered" + ("Value" - "OldValue") * tau\$,<br>
-&#160;<br>
-где dt -  100 мс;<br>
-Value – текущее нефильтрованное измеренное значение напряжения;<br>
-oldValue -  предыдущее фильтрованное значение.</p>
+<p>Nv parameters</p>
 </li>
 <li>
-<p>Для измерения температуры должен использоваться датчик <a href="https://www.waveshare.com/wiki/Infrared_Temperature_Sensor">инфракрасный датчик температуры</a></p>
+<p>Simple Tasker (Rtos)</p>
 </li>
 <li>
-<p>Общение с датчиком должно осуществляться по интерфейсу SMBus</p>
+<p>Rtos wrapper for third part RTOS</p>
+</li>
+<li>
+<p>Some other specific things like Filter, Duration calculation and so on</p>
 </li>
 </ul>
-</div>
-</li>
-<li>
-<p>Вывод значений температуры должен производиться на <a href="https://www.waveshare.com/4.2inch-e-Paper-Module-B.htm">экран с жидкими чернилами</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Общение с индикатором должно осуществляться через интерфейс SPIx (где х - любой не равный 1,2,3)</p>
-</li>
-<li>
-<p>Период вывода информации на индикатор должен быть 3 секунды.</p>
-</li>
-<li>
-<p>формат вывода:<br>
-"Температура: " XXX.XX [Units]</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Передача значений по беспроводному интерфейсу должна осуществляться через модуль <a href="https://elecfreaks.com/estore/download/EF03073-Bluetooth_Bee_(HC-05_and_HC-06)User_Guide.pdf">BlueTooth Bee HC-06</a></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Для подключения модуля BlueTooth должна использоваться плата <a href="https://www.waveshare.com/product/arduino-2/shields/others/accessory-shield.htm">Accessories Shield</a> или <a href="https://www.waveshare.com/product/arduino-2/shields/others/io-expansion-shield.htm">I/O Expansion Shield</a></p>
-</li>
-<li>
-<p>Периоди вывода информации через BlueTooth модуль должен быть 1 секунда.</p>
-</li>
-<li>
-<p>Общение с платой расширения должно осуществляться через USART2</p>
-</li>
-<li>
-<p>формат вывод:<br>
-"Температура: " XXX.XX [Units]</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Архитектура должна быть представлена в виде UML диаграмм в пакете Star UML</p>
-</li>
-<li>
-<p>Приложение должно быть написано на языке С++ с использование компилятора ARM 8.40.2</p>
-</li>
-<li>
-<p>При разработке должна использоваться Операционная Система Реального Времени FreeRTOS и <a href="https://github.com/lamer0k/RtosWrapper">С++ обертка над ней</a></p>
-</li>
-<li>
-<p>По нажатию кнопки USER на плате XNUCLEO-F411RE единцы измерения температуры должны изменяться в следующей циклической последовательности F&#8594;K&#8594;C.</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Перечень вопросов, подлежащих разработке:</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>В ходе работы необходимо разработать архитектуру программного обеспечения в виде диаграммы UML.</p>
-</li>
-<li>
-<p>В ходе работы необходимо разработать код программного обеспечения.</p>
-<div class="ulist">
-<ul>
-<li>
-<p>Код должен соответствовать стандарту кодирования <a href="https://tproger.ru/translations/stanford-cpp-style-guide/">Стэнфордского университета</a>, см также <a href="https://stanford.edu/class/archive/cs/cs106b/cs106b.1158/styleguide.shtml">оригинал</a></p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Работа программы должна быть продемонстрирована совместно с платой XNUCLEO-F411RE.</p>
-</li>
-<li>
-<p>Содержание работы должно соответствовать ГОСТ 19.402–78 «Единая система программной документации. Описание программы».</p>
-<div class="ulist">
-<ul>
-<li>
-<p>работа должна быть оформлена в формате Asciidoc и выложена на Github</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p>Описание архитектуры в виде UML диаграмм должно быть оформлено в разделе «Описание логической структуры» &#8594; “Алгоритм программы”.</p>
-</li>
-<li>
-<p>Дополнительно к архитектуре, в разделе «Описание логической структуры» &#8594; “Структура программы с описанием функций составных частей и связи между ними” должен быть описан принцип работы программы и взаимодействия разных блоков программы друг с другом.</p>
-</li>
-<li>
-<p>Оформление пояснительной записки к курсовой работе в соответствии с СТО ЮУрГУ 04–2008 «Курсовое и дипломное проектирование. Общие требования к содержанию и оформлению».</p>
-</li>
-</ul>
-</div>
-</li>
-<li>
-<p><strong>Календарный план:</strong></p>
-<div class="ulist">
-<ul>
-<li>
-<p>Сдача этапов выполнения курсовой работы осуществляется строго в соответствии с календарным планом.</p>
-</li>
-</ul>
-</div>
-</li>
-</ol>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 44.4444%;">
-<col style="width: 33.3333%;">
-<col style="width: 22.2223%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Наименование разделов курсовой работы</th>
-<th class="tableblock halign-left valign-top">Срок выполнения разделов работы</th>
-<th class="tableblock halign-left valign-top">Отметка руководителя о выполнении</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка общей архитектуры программы</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">28 марта 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка кода каркаса программы</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка детальной архитектуры модуля работы с датчиком</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">11 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка кода для модуля работы с датчиком</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">11 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка детальной архитектуры модуля работы с индикатором</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка кода для модуля работы с индикатором</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">18 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка детальной архитектуры модуля работы с USART и блутуз</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">25 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка кода для модуля работы  с USART и блутуз</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">25 апреля 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Разработка детальной архитектуры и кода для оставшихся модулей</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">2 мая 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Сдача и демонстрация работы устройства</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">9 мая 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Оформление пояснительной записки к курсовой работе</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">20 мая 2020 г.</p></td>
-<td class="tableblock halign-left valign-top"></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>&#160;<br>
-&#160;<br></p>
 </div>
 <div class="paragraph">
-<p>Руководитель работы:  &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;/С. В. Колодий/<br></p>
+<p>It allows RML to use components in their applications without any modification. The application just configure the components and uses it.</p>
 </div>
-<div class="paragraph text-center">
-<p>(подпись)<br></p>
+<div class="imageblock">
+<div class="content">
+<img src="images/CommonIdea.png" alt="CommonIdea">
 </div>
-<div class="paragraph text-left">
-<p>Студент &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;/&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; /<br></p>
 </div>
-<div class="paragraph text-center">
-<p>(подпись)<br></p>
+<div class="paragraph">
+<p>Example of configuring the Hardware</p>
 </div>
-<div class="paragraph text-left">
-<p>Студент &#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; &#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;&#95;/&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; /<br></p>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp"><span style="color:#777">// Filename          : uartconfig.hpp</span>
+
+<span style="color:#579">#pragma</span> once
+
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;system.hpp&quot;</span>                   <span style="color:#777">// For systemClock</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;hwuart.hpp&quot;</span>                   <span style="color:#777">// For HwUart</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;uart.hpp&quot;</span>                     <span style="color:#777">// For Uart4</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;uart4registers.hpp&quot;</span>           <span style="color:#777">// For Uart4 registers</span>
+
+<span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">tFrequencyTransmitter</span> ; <span style="color:#777">//subsriber for Uart events</span>
+<span style="color:#088;font-weight:bold">using</span> tUart =  Uart&lt;HwUart&lt;Uart4, System::systemClock / System::apbPrescaler&gt;, tFrequencyTransmitter&gt; ;</code></pre>
 </div>
-<div class="paragraph text-center">
-<p>(подпись)<br></p>
+</div>
+<div class="paragraph">
+<p>Example of configure the Rtos Timers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp"><span style="color:#777">// rtostimersconfig.hpp</span>
+
+<span style="color:#579">#pragma</span> once
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;rtostimer.hpp&quot;</span>        <span style="color:#777">// For RtosTimer</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;rtostimerservice.hpp&quot;</span> <span style="color:#777">// For RtosTimerService</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;tasksconfig.hpp&quot;</span>      <span style="color:#777">// For led1Task</span>
+
+<span style="color:#777">//Timer for Led1 task</span>
+<span style="color:#088;font-weight:bold">using</span> tLed1Timer = RtosTimer&lt;
+  led1Task,
+  <span style="color:#00D">1000</span>U, <span style="color:#777">//time in ms</span>
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskEvents&gt;(Led1TaskEvents::togglePin)&gt; ;
+
+<span style="color:#777">//Timer for MeasurementDirector task</span>
+<span style="color:#088;font-weight:bold">using</span> tMeasTimer = RtosTimer&lt;
+  measTask,
+  <span style="color:#00D">100</span>U, <span style="color:#777">//time in ms</span>
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskEvents&gt;(MeasurementDirectorTaskEvents::calculate)&gt; ;
+
+<span style="color:#777">//Timer for Frequency Transmition task</span>
+<span style="color:#088;font-weight:bold">using</span> tFrequencyTransmissionTimer = RtosTimer&lt;
+  frequencyTransmissionTask,
+  <span style="color:#00D">1000</span>U, <span style="color:#777">//time in ms</span>
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskEvents&gt;(FrequencyTransmissionEvents::transmitFrequency)&gt; ;
+
+<span style="color:#088;font-weight:bold">using</span> tRtosTimerService =
+  RtosTimerService&lt;tLed1Timer, tMeasTimer, tFrequencyTransmissionTimer&gt; ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Example of tasks configuration:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp"><span style="color:#777">//Filename          : tasksconfig.hpp</span>
+
+<span style="color:#579">#pragma</span> once
+
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;itask.hpp&quot;</span>                            <span style="color:#777">// For ITask</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;rtos.hpp&quot;</span>                             <span style="color:#777">// For Rtos</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;testtasks.hpp&quot;</span>                        <span style="color:#777">// For Led1Task, Led2Task</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;measurementdirector.hpp&quot;</span>              <span style="color:#777">// For MeasurementDirector</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;measurementdirectorconfig.hpp&quot;</span>        <span style="color:#777">// For SensorBoardFrequencyProcessing</span>
+<span style="color:#579">#include</span> <span style="color:#B44;font-weight:bold">&quot;frequencytransmissiondirector.hpp&quot;</span>    <span style="color:#777">// For FrequencyTransmissionDirector</span>
+
+<span style="color:#777">//Tasks: global objects</span>
+<span style="color:#088;font-weight:bold">inline</span> Led1Task led1Task ;
+<span style="color:#088;font-weight:bold">inline</span> MeasurementDirector&lt;SensorBoardFrequencyProcessing&gt; measTask ;
+<span style="color:#088;font-weight:bold">inline</span> FrequencyTransmissionDirector frequencyTransmissionTask ;
+
+<span style="color:#080;font-weight:bold">enum</span> <span style="color:#080;font-weight:bold">class</span> <span style="color:#B06;font-weight:bold">TaskPriorities</span> : tTaskPriority
+{
+  lowest = <span style="color:#00D">1</span>U,
+  low = <span style="color:#00D">2</span>U,
+  medium = <span style="color:#00D">3</span>U,
+  high = <span style="color:#00D">4</span>U,
+  highest = <span style="color:#00D">5</span>U
+} ;
+
+<span style="color:#777">//Configuration of Tcb block of task Led1</span>
+<span style="color:#088;font-weight:bold">inline</span> <span style="color:#088;font-weight:bold">constexpr</span> TaskControlBlock tcb1
+{
+  &amp;led1Task,
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskPriority&gt;(TaskPriorities::low)
+} ;
+
+<span style="color:#777">//Configuration of Tcb block of MeasurementDirector task</span>
+<span style="color:#088;font-weight:bold">inline</span> <span style="color:#088;font-weight:bold">constexpr</span> TaskControlBlock tcb2
+{
+  &amp;measTask,
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskPriority&gt;(TaskPriorities::low)
+} ;
+
+<span style="color:#777">//Configuration of Tcb block of Frequency Transmission task</span>
+<span style="color:#088;font-weight:bold">inline</span> <span style="color:#088;font-weight:bold">constexpr</span> TaskControlBlock tcb3
+{
+  &amp;frequencyTransmissionTask,
+  <span style="color:#080;font-weight:bold">static_cast</span>&lt;tTaskPriority&gt;(TaskPriorities::low)
+} ;
+
+<span style="color:#088;font-weight:bold">using</span> tRtos = Rtos&lt;&amp;tcb1, &amp;tcb2, &amp;tcb3&gt; ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And use this:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp"><span style="color:#0a8;font-weight:bold">int</span> main()
+{
+  tUart::Enable() ;
+  tUart::SetBaudRate(tU32{<span style="color:#00D">9600</span>U}) ;
+  tUart::SetParity(UartParity::none) ;
+  tUart::SetWordLength(UartWordLength::eightDataBits) ;
+  tUart::SetStopBitsNumber(UartStopBits::oneBit) ;
+  tUart::EnableTransmitter() ;
+
+  <span style="color:#777">//Start three tasks: frequencyTransmissionTask, measTask, led1Task</span>
+  tRtos::Start();
+
+  <span style="color:#080;font-weight:bold">return</span> <span style="color:#00D">0</span>;
+
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>All design used static polymorphism, but it is possible to use the traditional approach with objects</p>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_register_approach">Register approach</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>RML does not used the CMSIS at all. Instead of that is used registers which are generated from *.svd files, base on the <a href="https://habr.com/ru/post/459642/">article</a> It allows to have safe access to the registers.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/Registers.png" alt="Registers">
+</div>
+</div>
+<div class="paragraph">
+<p>And example of usage</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/ExampleReisters.png" alt="ExampleReisters">
+</div>
+</div>
+<div class="paragraph">
+<p>In the begginig RML uses CMSIS and this how they works with registers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp">GPIOA-&gt;AFR[<span style="color:#00D">1</span>] = <span style="color:#02b">0xBB000</span>U ;
+BitUtils::SetMask(RCC-&gt;APB1ENR,
+                   RCC_APB1ENR_TIM2EN | RCC_APB1ENR_TIM3EN |
+                   RCC_APB1ENR_TIM4EN | RCC_APB1ENR_UART4EN) ;
+NVIC_EnableIRQ(TIM2_IRQn) ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>And then RML decided to use autogenerated registers from svd file:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp">Gpioa::Afrh::Afrh11::Write(<span style="color:#00D">11</span>U) ;
+
+Rcc::Apb1Enr::Tim2En::Write(RccApb1EnrTim2EnValues::clockEnabled) ;
+Rcc::Apb1Enr::Tim5En::Write(RccApb1EnrTim5EnValues::clockEnabled) ;
+Rcc::Apb1Enr::Uart4En::Write(RccApb1EnrUart4EnValues::clockEnabled) ;
+
+NvicManager::EnableIrq&lt;Irqn::tim2&gt;() ;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>It is possible to use another approach for safety access to the registers:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="cpp"> GPIOB::AFRHPack&lt;
+        GPIOB::AFRH::AFRH13::Af5,
+        GPIOB::AFRH::AFRH15::Af5
+    &gt;::Set() ;
+
+ RCC::APB1ENRPack&lt;
+        RCC::APB1ENR::TIM4EN::Enable,
+        RCC::APB1ENR::TIM2EN::Enable,
+        RCC::APB1ENR::TIM3EN::Enable,
+        RCC::APB1ENR::USART4EN::Enable
+    &gt;::Set() ;
+
+NvicManager::EnableIrq&lt;Irqn::tim2&gt;() ;</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-03-16 22:51:40 +0500
+Last updated 2020-03-25 21:47:06 +0500
 </div>
 </div>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  messageStyle: "none",
+  tex2jax: {
+    inlineMath: [["\\(", "\\)"]],
+    displayMath: [["\\[", "\\]"]],
+    ignoreClass: "nostem|nolatexmath"
+  },
+  asciimath2jax: {
+    delimiters: [["\\$", "\\$"]],
+    ignoreClass: "nostem|noasciimath"
+  },
+  TeX: { equationNumbers: { autoNumber: "none" } }
+})
+MathJax.Hub.Register.StartupHook("AsciiMath Jax Ready", function () {
+  MathJax.InputJax.AsciiMath.postfilterHooks.Add(function (data, node) {
+    if ((node = data.script.parentNode) && (node = node.parentNode) && node.classList.contains('stemblock')) {
+      data.math.root.display = "block"
+    }
+    return data
+  })
+})
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_HTMLorMML"></script>
 </body>
 </html>

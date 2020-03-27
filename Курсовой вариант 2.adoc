@@ -34,7 +34,7 @@ stem:[tau = int  ((1-e^(-dt/(R*C)), RC > 0 sec), (1, RC<= 0 sec))] +
 stem:["FilteredValue" = "OldFiltered" + ("Value" - "OldValue") * tau], +
 {nbsp} +
 где dt -  100 мс; +
-Value – текущее нефильтрованное измеренное значение напряжения; +
+Value – текущее нефильтрованное измеренное значение температуры; +
 oldValue -  предыдущее фильтрованное значение.
 ** Для измерения температуры должен использоваться датчик https://www.waveshare.com/wiki/Infrared_Temperature_Sensor[инфракрасный датчик температуры]
 ** Общение с датчиком должно осуществляться по интерфейсу SMBus
@@ -45,7 +45,7 @@ oldValue -  предыдущее фильтрованное значение.
    "Температура: " XXX.XX [Units]
 * Передача значений по беспроводному интерфейсу должна осуществляться через модуль https://elecfreaks.com/estore/download/EF03073-Bluetooth_Bee_(HC-05_and_HC-06)User_Guide.pdf[BlueTooth Bee HC-06]
 ** Для подключения модуля BlueTooth должна использоваться плата https://www.waveshare.com/product/arduino-2/shields/others/accessory-shield.htm[Accessories Shield] или https://www.waveshare.com/product/arduino-2/shields/others/io-expansion-shield.htm[I/O Expansion Shield]
-** Периоди вывода информации через BlueTooth модуль должен быть 1 секунда.
+** Период вывода информации через BlueTooth модуль должен быть 1 секунда.
 ** Общение с платой расширения должно осуществляться через USART2
 ** формат вывод: +
    "Температура: " XXX.XX [Units]
