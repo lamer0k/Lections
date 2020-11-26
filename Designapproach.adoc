@@ -1,0 +1,882 @@
+
+= Предложения по дизайну
+
+:stem:
+
+== Полностью новый подход
+
+===== Преимущества:
+
+*+ Позволит переиспользовать компоненты в разных проектах без их копирования.*
+
+*+ Сократит потребление ПЗУ и ОЗУ. (Оценка можно до полутора раз на ПЗУ сэкономить на отдельных модулях)*
+
+*+ Простое юнит тестирование*
+
+*+ В новых проектах можно сконцентрироваться только на бизнес логике и цели проекта*
+
+===== Минусы
+
+*- Время и затраты на текущий проект*
+
+*- В погоне за универсализмом можно огрести проблем и вообще не сделать*
+
+
+
+===== Принципы на которых строится повествование
+
+Задачи которую предлагается решать:
+
+1.) Переиспользовать компоненты в других проектах(любых) без изменения кода.
+
+2.) Уменьшить размера бинарного кода
+
+3.) Уменьшить количество данных находящихся в ОЗУ
+
+4.) Упростить юнит тестирование
+
+Проанализировав наши проекты, я сделал вывод, что мы следуем следующим принципам:
+
+4.) Мы не используем динамическое выделение памяти
+
+5.) Практически все наши объекты глобальные и создаются при стартапе.
+
+6.) Параметры и зависимости практически всех объектов известны заранее также как и адреса всех объектов
+
+7.) У нас практически нет динамической подписки, за редким исключением (например, Подписка на первичную переменную). Подписки делаются в конструкторах глобальных объектов.
+
+Эти ограничения связаны с тем, что мы должны иметь надежный код.
+
+=== Переиспользование компонентов
+В прошлых проектах, мы переиспользовали код путём простого копирования в другой проект. Это с одной стороны позволяло быстро сделать новый проект, с другой стороны между кодовой базой не было никакой синхронизации и если что-то менялось в базе, нужно было те же самые изменения делать и в других проектах.
+
+Кроме того, так как структура была не модульной, а практически цельной, очень много зависимостей, которые требовали изменения в разных частях кода. Поэтому в новых проектах различия было трудно искать в коде, трудно переделывать юнит тесты и так далее...
+
+Предлагаемый подход - это полное развязывание компонентов друг от друга и использование их в разных проектах без изменения.
+Использование реально общей кодовой базы и выбор нужных компонентов для нового проекта с последующей их настройкой.
+
+Можно полностью переделать и перевести на компонентную основу следующие модули:
+
+* CortexM4 Аппаратные модули
+* Обертка, позволяющая осуществлять безопасный доступ к регистрам
+* Диагностику  (Статусы, установка, маппинг)
+* Nv параметры (Немного переделать, уменьшить потребление памяти)
+* Simple Tasker (Rtos, тоже немного переделать, чтобы уменьшить потребление памяти ПЗУ в основном)
+* Общая обертка над любыми RTOS (Это так, чтобы каждый раз обертки не городить)
+* Интерфейсы (Они и сейчас в принципе есть, но можно их упростить и немного расширить)
+* Другие модули, например Фильтры, вынести расчеты в отдельные модули и так далее. В принципе можно даже Давление, Температуру и т.д отдельными модулями сделать.
+
+Такой подход был опробован в RML (И где он сейчас :) )
+Подход RML позволял использовать компоненты в разных приложениях без модификации и минимальными требованиями к ресурсам микроконтроллера. Приложение должно только сконфигурировать необходимый компонент.
+
+image::images/CommonIdea.png[]
+
+Пример настройки таймеров RTOS для задач:
+
+[source, cpp]
+----
+// rtostimersconfig.hpp
+
+#pragma once
+#include "rtostimer.hpp"        // For RtosTimer common component
+#include "rtostimerservice.hpp" // For RtosTimerService commmon component
+#include "tasksconfig.hpp"      // For led1Task, measTask, frequencyTransmissionTask
+
+
+//Timer for Led1 task
+using tLed1Timer = RtosTimer<
+  led1Task, // подписчик на событие от таймера
+  1000U, //time in ms
+  tTaskEvents(Led1TaskEvents::togglePin)> ; //событие
+
+//Timer for MeasurementDirector task
+using tMeasTimer = RtosTimer<
+  measTask, // подписчик на событие от таймера
+  100U, //time in ms
+  tTaskEvents(MeasurementDirectorTaskEvents::calculate)> ;
+
+//Timer for Frequency Transmition task
+using tFrequencyTransmissionTimer = RtosTimer<
+  frequencyTransmissionTask, // подписчик на событие от таймера
+  1000U, //time in ms
+  tTaskEvents(FrequencyTransmissionEvents::transmitFrequency)> ;
+
+using tRtosTimerService =
+  RtosTimerService<tLed1Timer, tMeasTimer, tFrequencyTransmissionTimer> ;
+
+----
+
+Настройка задач
+
+[source, cpp]
+----
+//Filename  	: tasksconfig.hpp
+
+#pragma once
+
+#include "itask.hpp"                            // For ITask
+#include "rtos.hpp"                             // For Rtos
+#include "testtasks.hpp"                        // For Led1Task
+#include "measurementdirector.hpp"              // For MeasurementDirector
+#include "measurementdirectorconfig.hpp"        // For SensorBoardFrequencyProcessing
+#include "frequencytransmissiondirector.hpp"    // For FrequencyTransmissionDirector
+
+//Tasks: global objects
+inline Led1Task led1Task ;
+inline MeasurementDirector<SensorBoardFrequencyProcessing> measTask ;
+inline FrequencyTransmissionDirector frequencyTransmissionTask ;
+
+enum class TaskPriorities : tTaskPriority
+{
+  lowest = 1U,
+  low = 2U,
+  medium = 3U,
+  high = 4U,
+  highest = 5U
+} ;
+
+//Configuration of Tcb block of task Led1
+inline constexpr TaskControlBlock tcb1
+{
+  &led1Task,
+  TaskPriorities::low
+} ;
+
+//Configuration of Tcb block of MeasurementDirector task
+inline constexpr TaskControlBlock tcb2
+{
+  &measTask,
+  TaskPriorities::low
+} ;
+
+//Configuration of Tcb block of Frequency Transmission task
+inline constexpr TaskControlBlock tcb3
+{
+  &frequencyTransmissionTask,
+  TaskPriorities::low
+} ;
+
+using tRtos = Rtos<&tcb1, &tcb2, &tcb3> ; // 3 задачи
+
+----
+
+И потом используем это так:
+
+[source, cpp]
+----
+int main()
+{
+  //Start three tasks: frequencyTransmissionTask, measTask, led1Task
+  tRtos::Start(); // Никаких накладных, задачи уже сделаны на этапе компиляции
+
+  return 0;
+
+}
+----
+Для того, чтобы сделать такую компонентную модель необходимо чтобы архитектура была расширяемой и простой - этого можно добиться используя SOLID принцип.
+
+=== Почему нельзя сделать компоненты из легаси архитектуры. Что не так с легаси архитектурой и кодом
+Для того, чтобы правильно и хорошо переиспользовать код, нужно разрабатывать ПО следуя определённым правилам: иметь меньше зависимостей, правильно использовать наследование, делать небольшие классы и интерфейсы.
+
+Легаси код плохо подаётся изменению в других проектах и плох в переиспользовании из-за нарушения принципов SOLID
+
+
+[#___s_the_single_responsibility_principle]
+===== Violation of the principle of (S — The Single Responsibility Principle)
+
+====
+A software entity must have only one reason to change.
+====
+
+As a consequence of this postulate
+
+====
+If several software entities change together for the same reasons, then it is actually a single software entity. Combine them immediately.
+====
+
+The example below shows that in addition to calculating the pressure, some bits are also set to the Comprehensive Status. So there are 2 responsibilities, notification and also updating Comprehensive statuses.
+
+In other words, if we want to use the pressure class and Notification method in another project with different statuses, we will have to change the Notify method not only because of subscribers change or but also because we can use different Comprehensive statuses.   And in this case we will have to find in several classes which statuses and where should be change. And how can I find where the statuses change?
+
+And in General, changes in the set bits will change the Global Status.
+
+[source, cpp]
+----
+void cPressure::notifyGoodUpdate(void)
+{
+   tF32 compensatedPressure;
+   const tSaturationDirection eSatDir = oPressureCore.calculate(compensatedPressure);
+   tDeviceVarStatus eVarStatus;
+   ...
+   oInternalValue.set(compensatedPressure, eVarStatus, eSatDir,
+                      oRealTimeClock.getCurrentDateTime().timeSinceMidnight);
+
+   notify();
+   oPressureFilter.updateVal(compensatedPressure);
+
+   if(isProcessAlertTriggered(getFilteredInternalValue()))
+   {
+      oGlobalStatus.setComprehensiveStatus(CS_pressureAlert);  # (1)
+   }
+   else
+   {
+      oGlobalStatus.clearComprehensiveStatus(CS_pressureAlert); # (2)
+   }
+}
+----
+We have to update the notifyGoodUpdate() method of cPressure class and also a couple of methods of oGlobalStatus class.
+
+NOTE: A possible solution is to save the error status in the object itself and provide an interface for reading them.
+
+For example, it is possible to create Pressure class as a separate component, with settings of subscribers on the pressure updating, status bits to set in case of errors, units of measurement, and so on without any external dependencies. This is certainly a difficult task, but it is quite solvable.
+
+
+NOTE: A possible solution is to crete a base class for Asic with virtual method readCounts or use static polymorphous.
+
+
+===== Нарушение принципа открытости/закрытости (O — The Open/Closed Principle)
+====
+Программные сущности должны быть открыты для расширения и закрыты для модификации.
+====
+
+Пример, если нам нужно добавить новый детальный статус, то нам придется переделать  метод *findDetailedStatusRelation* в *cGlobalStatus*. Тоже самое касается других методов и статусов в классе *cGlobalStatus*.
+
+[source, cpp]
+----
+#define DS_outputBoardNonCorrectableWarning  (tDetailedStatus)0x000800000000
+#define DS_displayUpdateFailure              (tDetailedStatus)0x000400000000
+//unused                                     (tDetailedStatus)0x000200000000
+#define DS_boardTemperatureOutOfLimits       (tDetailedStatus)0x000100000000
+ ...
+
+class cGlobalStatus
+{
+   ...
+  private:
+    tDetailedStatus findDetailedStatusRelation(const tComprehensiveStatus bitId,
+                                        tComprehensiveStatus& statusMask) const;
+};
+----
+
+NOTE: Возможное решение, вынести маппинг битов в отдельную сущность.
+
+
+===== Принцип подстановки Лисков (L — The Liskov Substitute Principle)
+
+====
+Наследующий класс должен дополнять, а не замещать поведение базового класса.
+
+Если базовый класс проходит определённый юнит-тест, то его должны проходить все наследники базового класса тоже.
+====
+
+image::images/liskov.png[]
+
+[source, cpp]
+----
+class cVariableExternal
+{
+   public:
+      ...
+      virtual tDeviceVarStatus getStatus(void) const; // Наследуемый класс может заместить поведение базового класса
+      virtual tF32 getExternalMinSpan(void) const = 0;
+
+      virtual tSec getDamping(void) const {return (tSec)NAN;} // Наследуемый класс может заместить поведение базового
+      virtual tHartRespCode setDamping(const tSec newTimeConstant) { return HRC_invalidSelection; } //Тоже самое
+
+      virtual tDeviceVarClassificationCode getClassification(void) const { return DVCC_notYetClassified; } //Также
+      virtual tU24 getSensorSerialNumber(void) const; // И еще раз
+      virtual tS8 getDisplayPrecision(void) const = 0;
+      ...
+};
+
+// а потом еще и использовать "костыли" в виде виртуального наследования
+class cVariableMappable : virtual public cVariableExternal, public cSubject
+----
+
+NOTE: Возможное решение, функции базового класса должны быть либо чисто виртуальные, либо не виртуальные.
+
+==== Принцип разделения интерфейсов (I — The Interface Segregation Principle)
+====
+Program entities should not depend on parts of the interface that they do not use (and should not be aware of them either).
+====
+It seems that everything is not bad with the interfaces, but there are a couple of possibilities
+
+
+
+[source, cpp]
+----
+class cVariableExternal
+{
+   public:
+      ...
+      tF32 getExternalValue(void) const;
+      virtual tDeviceVarStatus getStatus(void) const;
+
+      HART::t32thsOfMs getTimestamp(void) const; // а всем переменным нужна эта хрень? поэтому можно в отдельный интерфейс
+----
+
+NOTE: Возможное решение, сделать отдельные интерфейсы для каждого случая. Выделить в базовый класс действительно только общие вещи.
+
+==== Принцип инверсии зависимости (D — The Dependency Inversion)
+
+====
+Upper-level modules should not depend on lower-level modules. Both types of modules must depend on abstractions.
+
+Abstractions should not depend on details. Details must depend on abstractions.
+====
+
+[source, cpp]
+----
+class cPressureTrim
+{
+   public:
+      cPressureTrim(cIirFilterConfig& oFilterConfig, const tF32 minTrimSpanValue) :  oFilter(oFilterConfig) {};
+
+   private:
+      cIirFilter oFilter;    //Strict dependence on cIirFilter and its implementation
+};
+----
+
+NOTE: A possible solution is to create a filter object outside, and pass a reference to Filter interface
+
+
+== fdfdfdfdf
+
+
+=== С++ 17 преимущества
+
+==== Меньше кода, как исходного, так и бинарного
+
+===== Использование constexpr
+
+[source, cpp]
+----
+//in displaydriverloi.h file
+class cDisplayDriverLoi
+{
+  ...
+  static const tCharacterSegmentTable segmentTable;
+}
+
+// in *.cpp file
+const tCharacterSegmentTable cDisplayDriverLoi::segmentTable = {
+   {0xA8, 0xA8}, {0x00, 0x28}, {0xA4, 0xB0}, /* 0,1,2 */
+   {0x84, 0xB8}, {0x0C, 0x38}, {0x8C, 0x98}, /* 3,4,5 */
+   ...
+   {0x40, 0xB0}, {0x10, 0x40}, {0x00, 0x00}, /* ,?,/,' ' */
+   {0x57, 0x54}, {0x1E, 0x5C}, {0x00, 0x54}, /* *,%,left arrow */
+   {0x00, 0x80}                              /* ovrscr */
+   };
+
+----
+
+[source, cpp]
+----
+//in *.h file
+class cDisplayDriverLoi
+{
+  ...
+   static constexpr tCharacterSegmentTable segmentTable = {
+   {0xA8, 0xA8}, {0x00, 0x28}, {0xA4, 0xB0}, /* 0,1,2 */
+   {0x84, 0xB8}, {0x0C, 0x38}, {0x8C, 0x98}, /* 3,4,5 */
+   ...
+   {0x40, 0xB0}, {0x10, 0x40}, {0x00, 0x00}, /* ,?,/,' ' */
+   {0x57, 0x54}, {0x1E, 0x5C}, {0x00, 0x54}, /* *,%,left arrow */
+   {0x00, 0x80}                              /* ovrscr */
+   };
+}
+----
+
+
+===== Использование inline для переменных и атрибутов
+
+Пример: Использование inline переменных
+
+[source, cpp]
+----
+//pressure.h
+class cPressure : public cVariableMappable, public cVariableTrimmable,
+                    public cVariableAlertable, public cVariableForceable
+{
+   public:
+      explicit cPressure(cIirFilterConfig& oFilterConfig);
+...
+} ;
+
+extern cPressure oPressure;
+
+// somewhere in the cpp file
+cPressure oPressure; // определение объекта oPressure
+int main()
+{
+}
+----
+
+C++17
+[source, cpp]
+----
+//pressure.h
+class cPressure : public cVariableMappable, public cVariableTrimmable,
+                    public cVariableAlertable, public cVariableForceable
+{
+   public:
+      explicit cPressure(cIirFilterConfig& oFilterConfig);
+...
+} ;
+
+inline cPressure oPressure; // определение и объявление объекта oPressure. Так как это inline переменная, то объявление будет только 1 раз, не зависимо от того, сколько раз заголовочник подключался в cpp файлы.
+
+// somewhere in the cpp file. Не нужно уже определять.
+int main()
+{
+}
+----
+
+
+Пример: Использование inline статических переменных
+
+[source, cpp]
+----
+// in sequencescreenset.h
+class cSequenceScreenSet: public cScreenSet
+{
+   ...
+   //Variables shared by the functions listed below.
+   static tSaveState eSaveState;
+}
+
+// in sequencescreenset.h.cpp
+tSaveState cDynamicMenuScreenSet::eSaveState = SS_none;
+----
+
+C++17
+[source, cpp]
+----
+// in sequencescreenset.h
+class cSequenceScreenSet: public cScreenSet
+{
+  ...
+  //Variables shared by the functions listed below.
+  inline static tSaveState eSaveState = SS_none;;
+}
+
+----
+
+
+==== Использование std::pair и std::tupple
+
+Пример: Упростить интерфейс. Например, одновременно получать и статус и значение параметра.
+
+Вместо:
+[source, cpp]
+----
+class cInternalValue
+{
+...
+ tF32 getValue(void) const;
+ tDeviceVarStatus getStatus(void) const;
+};
+
+auto SomeMethod()
+{
+    const varStatus = internalValue.getStatus() ;
+    if (varStatus != tDeviceVarStatus::DVS_goodNotLimited)
+    {
+       return  internalValue.getValue();
+    }
+}
+----
+
+С++17
+[source, cpp]
+----
+using tVarValueAndStatus = std::pair<tF32, tDeviceVarStatus> ;
+
+class InternalValue
+{
+...
+ tVarValueAndStatus Get() const;
+};
+
+
+....
+
+auto SomeMethod()
+{
+    const auto var = internalValue.Get() ;
+    if (get<tDeviceVarStatus>(var) != tDeviceVarStatus::DVS_goodNotLimited)
+    {
+       return std::get<tF32>(var) ;
+    }
+}
+----
+
+
+сonstexpr конструктор. Константные строки с размером сразу
+
+[source, cpp]
+----
+struct StringView
+{
+  const char* str;
+  const size_t size;
+
+  template<size_t N>
+  explicit constexpr SusuStringView(const char (& s)[N]): str(s), size(N - 1)
+  {
+  }
+  ... //добавить операторы, итераторы и будет вообще красота
+};
+
+class KelvinUnits: IUnits
+{
+private:
+  static constexpr SusuStringView unitsStr = StringView("K");
+  static constepxr tF32 offset = 273.15f ;
+
+public:
+  tSensorValue Get(tF32 value) const override
+  {
+    return std::make_pair(unitsStr, value + offset);
+  }
+} ;
+----
+
+===== Использование шаблона с переменным количеством аргументов
+
+Помогает избавиться от необходимости следить за размером массива, его можно вычислить на этапе компиляции:
+
+[source, cpp]
+----
+template <const auto&... units>
+class Temperature
+{
+private:
+  static constexpr size_t UnitsCount = sizeof...(units) ; //Узнаем количество аргументов
+  static constexpr std::array<const IUnits*, UnitsCount> unitsList = { &units...};
+
+  size_t index = 0U;
+public:
+
+  void SetUnits(size_t value)
+  {
+    (value < UnitsCount) ? index = value ;
+  }
+
+  tSensorValue Get(float value)
+  {
+    auto& currentUnits = *unitsList[index] ;
+    return currentUnits.Get(value) ;
+  }
+};
+
+// Use in some class
+class SomeMediator
+{
+private:
+// все создаться на этапе компиляции.
+  static constexpr KelvinUnits kelvin = KelvinUnits();
+  static constexpr CelsiusUnits celsius = CelsiusUnits();
+
+  Temperature<kelvin, celsius> temperature;
+...
+}
+----
+
+Можно сделать все статически:
+https://godbolt.org/z/2Vd2Df[Пример можно посмотреть здесь]
+
+
+=== Использование static_assert и constexpr
+
+[source, cpp]
+----
+template<typename ADC>
+struct Adc
+{
+public:
+  template<auto ...Args>
+  static auto ConfigureChannels()
+  {
+    constexpr auto ChannelsCount = sizeof ... (Args);
+    ADC::SQR1::L::Set(ChannelsCount - 1);
+    auto result = CalculateChannelValues<Args...>(); //Вызова функции не будет
+
+    ADC::SQR1::Set(std::get<0>(result));
+    ADC::SQR2::Write(std::get<1>(result));
+    ADC::SQR3::Write(std::get<2>(result));
+   }
+
+private:
+  //Вся эта функция будет выполена и посчитана на этапе компиляции - 0 кода в бинарном файле
+  template<auto ...Args>
+  constexpr static auto CalculateChannelValues()
+  {
+    auto channelsList = {Args...} ;
+    ADC1::SQR3::Type result3 = 0 ;
+    ADC1::SQR2::Type result2 = 0 ;
+    ADC1::SQR1::Type result1 = 0 ;
+    std::size_t index = 0U ;
+
+    constexpr size_t ChannelsInRegisters = 6U ;
+    constexpr size_t BitsPerChannel = 5U ;
+    constexpr auto ChannelsCount = sizeof ... (Args) ;
+
+    static_assert(ChannelsCount != 0, "Количество аргументов должно быть не 0") ;
+
+    for (auto it: channelsList)
+    {
+      if (index < ChannelsInRegisters)
+      {
+        result3 |= (it << (index * BitsPerChannel)) ;
+      }
+      else if ((index < (ChannelsInRegisters * 2)) && (index >= ChannelsInRegisters))
+      {
+        result2 |= (it << ((index - ChannelsInRegisters) * BitsPerChannel)) ;
+      } else if ((index < 16) && (index >= ChannelsInRegisters * 2))
+      {
+        result1 |= (it << ((index - ChannelsInRegisters * 2) * BitsPerChannel)) ;
+      }
+      index++;
+    }
+    return make_tuple(result1, result2, result3) ;
+  }
+};
+
+// Использование
+ using myAdc = Adc<ADC1> ;
+ myAdc::SetChannels<18>() ;
+ myAdc::SetChannels<18,1,5,7,4,5,4,3,2,7,12,78>() ; // Задаем сразу много портов
+
+----
+
+=== Использование статического полиморфизма
+
+Поскольку у нас практически все известно про объекты и их поведение то вместо позднего связывания, виртуальных функций и интерфейсов можно использовать статический полиморфизм, ну и собственно можно вообще всю программу сделать на статике.
+
+Такой подход был испробован в RML. Он конечно не всегда оправдан, но можно совмещать.
+
+
+==== Статическая подписка
+Позволяет на этапе компиляции подписать необходимые объекты или классы на события без лишнего кода и гемора.
+
+[source, cpp]
+----
+
+template<tU8 size>
+class cRtosHwTimer
+{
+   public:
+      virtual void isrHandler(void);
+      void subscribe(cHwTimerSubscriber* pSubscriber);
+      ...
+   private:
+      cRtosHwTimer(const cRtosHwTimer& other);
+      const cRtosHwTimer& operator=(const cRtosHwTimer& other);
+
+      static const tU8 maxSubscribersNumber;
+      cHwTimerSubscriber* subscribers[size];
+      tU8 subscribersNumber;
+};
+// ненужный метод вообще
+template<tU8 size>
+void cRtosHwTimer<size>::subscribe(cHwTimerSubscriber* pSubscriber)
+{
+   ASSERT(subscribersNumber < maxSubscribersNumber); // проверка на длину массива
+   subscribers[subscribersNumber] = pSubscriber; //дурацкая подписка
+   subscribersNumber++; //лишний счетчик
+}
+
+template<tU8 size>
+void cRtosHwTimer<size>::isrHandler(void)
+{
+   ...
+   for(tU8 index = (tU8)0; index < subscribersNumber; index++)
+   {
+      subscribers[index]->timerExpiredNotify();
+   }
+}
+
+//затем для каждого таймера нужно вызвать метод для подписки. Лишний код и работа
+// Мозг можно сломать....
+cRtosTimerService::cRtosTimerService(void) : ...
+{
+   ...
+
+   cRtosHwTimer<TIMER_MULTIPLE_SUBSCRIBERS>& oHalfSecondTimer = oRtosHwTimerService.getTimerHalfSecond();
+
+   oHalfSecondTimer.subscribe(&timerSensorTemperature);
+   oHalfSecondTimer.subscribe(&timerTaskExecutionMonitor);
+   oHalfSecondTimer.subscribe(&timerLoiDirector);
+   oHalfSecondTimer.subscribe(&timerLoiDirectorMenuMode);
+   oHalfSecondTimer.subscribe(&timerLoiDirectorMenuModeExitTimeout);
+   oHalfSecondTimer.subscribe(&oTestFixedCurrent);
+}
+----
+
+C++17
+
+[source, cpp]
+----
+template <auto& ...Timers> //если объекты то  template <auto& ...Timers>
+struct TaskerTimerService {
+    static void OnSystemTick()  //Прерывание по системному тику
+    {
+        (Timers.timerExpiredNotify(), ...) ; //вызов методов подписчиков
+    }
+} ;
+
+//Подписываем таймера на сервис от системного таймера. Количество подписчиков не ограничено...
+using tRtosTimerService = TaskerTimerService<timerSensorTemperature, timerTaskExecutionMonitor, timerLoiDirector, timerLoiDirectorMenuMode, timerLoiDirectorMenuModeExitTimeout> ;
+----
+
+
+==== Использование статического полиморфизма и if constexpr
+Замена #if define #else. Позволяет подстраивать компонент под нужды приложения и добавлять только тот код, что действительно нужен в функции.
+
+[source, cpp]
+----
+template <typename TimerModule, typename CcTimerObserver, typename CCTimerNum>
+struct HardwareCCxTimerBase
+{
+  __forceinline static void HandleInterrupt()
+  {
+    // Код будет только в том случае, если приложение использует прерывание по СС1
+    if constexpr (std::is_same<CCTimerNum, CC1>::value)
+    {
+      // Проверка что стоит запрос на прерывание СС1
+      if (TimerModule::Timer::SR::CC1IF::InterruptPending::IsSet())
+      {
+         CcTimerObserver::OnCaptureCompare() ;
+      }
+    } else
+    // Код будет только в том случае, если приложение использует прерывание по СС2
+    if constexpr (std::is_same<CCTimerNum, CC2>::value)
+    {
+      // Проверка что стоит запрос на прерывание СС1
+      if (TimerModule::Timer::SR::CC2IF::InterruptPending::IsSet())
+      {
+         CcTimerObserver::OnCaptureCompare() ;
+      }
+    } else
+    .... //И так далее - проверяем другие использует ли приложение другие прерывания
+   {
+      assert(false) ;
+   }
+}
+
+//Использование, настройка
+  struct CaptureTimer1 : HardwareCCxTimerBase<
+      TIM1, // Задали работу с таймером TIM1
+      CcTimer1Observers<SomeObserver, SomeOtherObserver>, // Два подписчика на прерывание от СС1
+      CC1  //Прерывание СС1
+  >  {};
+
+//В таблице векторов прерваний просто вставляем CaptureTimer1::HandleInterrupt
+----
+
+
+
+
+
+
+По такому принципу сделана обертка над регистрами для обеспечения безопасного доступа к регистрам. Там вообще не используются CMSIS заголовчник, вместо этого, регистры генерируются из svd файла.
+
+image::images/Registers.png[]
+
+Пример работы с CMSIS :
+[source, cpp]
+----
+GPIOA->AFR[1] = 0xBB000U ;
+BitUtils::SetMask(RCC->APB1ENR,
+                   RCC_APB1ENR_TIM2EN | RCC_APB1ENR_TIM3EN |
+                   RCC_APB1ENR_TIM4EN | RCC_APB1ENR_UART4EN) ;
+NVIC_EnableIRQ(TIM2_IRQn) ;
+----
+
+И пример работы с регистрами в RML:
+
+[source, cpp]
+----
+Gpioa::Afrh::Afrh11::Write(11U) ;
+
+Rcc::Apb1Enr::Tim2En::Write(RccApb1EnrTim2EnValues::clockEnabled) ;
+Rcc::Apb1Enr::Tim5En::Write(RccApb1EnrTim5EnValues::clockEnabled) ;
+Rcc::Apb1Enr::Uart4En::Write(RccApb1EnrUart4EnValues::clockEnabled) ;
+
+NvicManager::EnableIrq<Irqn::tim2>() ;
+----
+
+Более радикальный метод https://habr.com/ru/post/459642/[Вот тут описан].
+
+[source, cpp]
+----
+ GPIOB::MODERPack<
+        GPIOB::MODER::MODER1::Output,         //CS
+        GPIOB::MODER::MODER2::Output,         //DC
+        GPIOB::MODER::MODER8::Output,
+        GPIOB::MODER::MODER9::Output,
+        GPIOB::MODER::MODER13::Alternate,     //PortC.3 scl
+        GPIOB::MODER::MODER15::Alternate      //PortC.2 sda
+    >::Set() ;
+
+    GPIOB::AFRHPack<
+        GPIOB::AFRH::AFRH13::Af5,
+        GPIOB::AFRH::AFRH15::Af5
+    >::Set() ;
+
+    //нельзя поставить никаких других бит, кроме тех, что описаны для SPI2:CR1 регистра
+    SPI2::CR1Pack<
+        SPI2::CR1::MSTR::Master,
+        SPI2::CR1::BIDIMODE::Unidirectional2Line,
+        SPI2::CR1::DFF::Data8bit,
+        SPI2::CR1::CPOL::High,
+        SPI2::CR1::CPHA::Phase2edge,
+        SPI2::CR1::SSM::NssSoftwareEnable,
+        SPI2::CR1::SSI::Value1,
+        SPI2::CR1::BR::PclockDiv2,
+        SPI2::CR1::LSBFIRST::MsbFisrt,
+        SPI2::CR1::CRCEN::CrcCalcDisable
+    >::Set() ;
+
+----
+
+
+Пример конфигурации UART:
+
+[source, cpp]
+----
+// Filename  	: uartconfig.hpp
+
+#pragma once
+
+#include "system.hpp"                   // For System
+#include "hwuart.hpp"                   // For HwUart
+#include "uart.hpp"                     // For Uart4
+#include "uart4registers.hpp"           // For Uart4 registers
+
+class tFrequencyTransmitter ; //подписчик на Uart события
+
+using tUart =  Uart<HwUart<Uart4, System::systemClock / System::apbPrescaler>, tFrequencyTransmitter> ;
+
+----
+
+Использование:
+
+[source, cpp]
+----
+
+int main()
+{
+  tUart::Enable() ;
+  tUart::SetBaudRate(tU32{9600U}) ;
+  tUart::SetParity(UartParity::none) ;
+  tUart::SetWordLength(UartWordLength::eightDataBits) ;
+  tUart::SetStopBitsNumber(UartStopBits::oneBit) ;
+  tUart::EnableTransmitter() ;
+
+  return 0;
+
+}
+----
+

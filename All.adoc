@@ -22,7 +22,7 @@ include::attributes-ru.adoc[]
 
 include::Preface.adoc[]
 
-include::Introdaction.adoc[]
+include::Introduction.adoc[]
 
 include::Lection1.adoc[]
 
