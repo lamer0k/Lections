@@ -7,6 +7,7 @@
 :figure-caption: Рисунок
 :table-caption: Таблица
 
+
 include::terms.adoc[]
 
 <<<
@@ -34,7 +35,7 @@ include::terms.adoc[]
 целая отрасль разработки ПО. Одними из лидеров в этой области являются фирмы IAR Systems."
 --
 Для студенческих нужд размера кода в 32КБ более чем достаточно. В курсе мы будем использовать IAR
-Embedded Workbench for ARM ver 8.40. Состав этого инструмента показан на Рисунке <<IAR_Workbench>>.
+Embedded Workbench for ARM ver 9.10.2 Состав этого инструмента показан на Рисунке <<IAR_Workbench>>.
 
 <<<
 

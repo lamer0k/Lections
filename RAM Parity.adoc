@@ -1,0 +1,239 @@
+:description: RAM parity
+:keywords: AsciiDoc
+:imagesdir: RAMParityimg
+:figure-caption: Figure
+:table-caption: Table
+:sectnums:
+:toc: macro
+:toc-title: Table of content
+:docinfo: shared,shared-footer
+
+= RAM Parity
+Author Name
+v1.0, 2020-12-30
+:doctype: book
+:backend: docbook
+:docinfo:
+
+
+[small]#*Legal Notices*#
+
+[small]#Copyright © 2019 by Emerson. All rights reserved.#
+
+[small]#This document contains proprietary and confidential material that is the sole property of Emerson. The information contained herein is intended for internal use by Emerson employees and is not intended for distribution outside of the company. As an unpublished work of trade secrets, the recipient shall keep this document confidential. Any re-use, copying, or distribution, either in whole or in part, of this material without the express written consent of Emerson is strictly forbidden.#
+
+
+toc::[]
+
+<<<
+
+== Embedded SRAM
+STM32L431xx feature 64 Kbyte of embedded SRAM STM32L451xx devices feature 160 Kbyte of embedded SRAM, split into two blocks:
+
+* 64/128 Kbyte mapped at address 0x2000 0000 (SRAM1)
+* 16/32 Kbyte located at address 0x1000 0000 with hardware parity check (SRAM2).
+
+This memory is also mapped at address 0x2002 0000/0x200 C000, offering a contiguous address
+space with the SRAM1 (16/32 Kbyte aliased by bit band).
+The memory can be accessed in read/write at CPU clock speed with 0 wait states.
+
+
+== SRAM2 parity check
+The user can enable the SRAM2 parity check using the option bit SRAM2_PE in the user
+option byte (refer to Section 3.4.1 of the Reference Manual: Option bytes description).
+
+The data bus width is 36 bits because 4 bits are available for parity check (1 bit per byte) in
+order to increase memory robustness, as required for instance by Class B or SIL norms.
+
+The parity bits are computed and stored when writing into the SRAM2. Then, they are
+automatically checked when reading. If one bit fails, an NMI is generated.
+
+
+== Enable parity checking
+To enable parity checking it needs to set the option bit SRAM2_PE in the Flash option register(FLASH_OPTR). The register is located in the special Flash area at address 0x1FFF'7800. There are two ways to set this option:
+
+* By firmware itself
+* By programming device
+
+=== Enable parity checking by firmware
+Because the optional bytes are in Flash that it needs to unlock writing to the flash using FLASH_CR.
+See more details in Section 3.4.2 Option bytes programming of the Reference Manual.
+
+IMPORTANT: We do not want to use this option because it has a risk of an unexpected run of this code
+
+<<<
+
+=== Enable parity checking by programming device
+We use 2 kinds of programming device:
+
+* J-Link
+* ST-Link
+
+==== J-Link
+For debugging we use J-link programmer, the information on how to set SRAM2_PE bit through the J-Link is described in the
+
+CC: 2051HART\Enhanced_2\02_Project_Management\11_Software_Process\software_development_environment.doc
+
+==== ST-Link
+Manufacturing will use the ST-Link. To set SRAM2_PE bit it needs to run the STM32 ST-LINK Utility, open the menu _Target->Option Bytes..._
+
+.Menu Option Bytes...
+image::image-2022-01-17-14-06-41-040.png[]
+
+and then uncheck the options SRAM_RST and SRAM_PE
+
+.Set SRAM2 Parity enable On
+image::image-2022-01-17-14-10-46-860.png[]
+
+SRAM2_RST:: This bit allows the user to enable the SRAM2 erase on system
+reset. If checked SRAM2 is not erased when a system reset occurs. If not
+checked, SRAM2 is erased when system reset occurs.
+SRAM_PE:: This bit allows the user to enable the SRAM2 hardware parity check. If
+checked, SRAM2 parity check is disabled.
+
+
+
+== NMI handling
+
+The SRS does not directly say what the software should do if RAM parity happens. But we use the next exception for RAM parity handling.
+[cols="2,6,5,4,2"]
+|===
+|ID |Description |Detection |Action |Trigger to Clear
+
+|FS_SRSX25
+|Microcontroller diagnostics have detected an error
+|Background CPU or RAM diagnostics detects an error.
+|Device can’t be trusted.
+|[none]
+
+|===
+There is no flag to check if it is RAM parity error happens, but NMI rises just in 3 cases:
+
+* Flash ECC error (there is the flag that can define this kind of error)
+* HSE is failing when Clock Security System is enabled (we do not have requirements to use this feature)
+* RAM parity error when SRAM_PE bit is enabled.
+
+When NMI rises the software sets a special flag that says that NMI happens, after that leave the NMI. The CPU diagnostic checks this flag and if it has an error, set the comprehensive status.
+[source, cpp]
+----
+inline static void nmiHandler()
+ {
+    //Uses for RAM parity check fault
+    cCpuDiagnostics::unexpectedCPUError = (tU32)(~noRamParityError);
+
+    //NMI is also used for Flash ECC error detection, the NMI rises again
+    //until ECCD flag is not cleared. We do not want to clear ECCD flag,
+    //so the watchdog resets the device.
+
+    //NMI also rises when Clock Security System is enabled in the
+    //RCC_CR::CSSON and HSE is failing. We do not have a requirement to rise
+    //NMI in this case, so the Clock Security System is not activated.
+ }
+
+...
+
+[[noreturn]] void cCpuDiagnostics::run(const tRtosEvents threadEvents)
+{
+   //This thread has only 1 wake reason
+   ASSERT(threadEvents == CD_RUN);
+
+   for(;;)
+   {
+      //unexpectedCPUError sets in the NMI interrupt if RAM parity error found
+      if (unexpectedCPUError != noRamParityError)
+      {
+         oGlobalStatus.setComprehensiveStatus(CS_microcontrollerError);
+      }
+...
+}
+----
+
+=== Issue
+When option bit SRAM2_PE during the burning the firmware by programming device, after a device is resetting the NMI interrupt is risen, and software goes to NMI handler. By default, we set NMI handler just infinity loop, so the device resetting after the watchdog is triggered.
+
+NOTE: We still are under investigation fo this behaviour. The reference manual says that _When enabling the RAM parity check, it is advised to initialize by software the whole RAM
+memory at the beginning of the code, to avoid getting parity errors when reading non-initialized locations._ So we try to reinit all SRAM2 immediately after reset by special reset handling function. But NMI is still triggered. We continue the investigation in the next sprint.
+
+<<<
+
+== Place data to SRAM2 area
+Per SRS, critical data should be placed in the SRAM2:
+
+[cols="2,7"]
+|===
+|ID |Description
+
+|FS_SRSA08
+|The software shall combine all critical parts of RAM data in dedicated section of MCU memory with continuous integrity checking ability (see FS_SRSX25) .
+|
+
+|===
+
+By default, all readwrite data and STACK are placed in the SRAM1 (non-parity) area. It needs to update the linker script to place readwrite data in the SRAM2 area. It needs to define SRAM2 region addresses.
+
+[source, cpp, linenums]
+----
+define symbol __ICFEDIT_size_cstack__     = 0x1000;
+define block CSTACK     with alignment = 8, size = __ICFEDIT_size_cstack__   { };
+
+define symbol __ICFEDIT_region_IRAM2_start__ = 0x10000000;
+define symbol __ICFEDIT_region_IRAM2_end__   = 0x10003FFF;
+define region CRAM_region   =   mem:[from __ICFEDIT_region_IRAM2_start__ to __ICFEDIT_region_IRAM2_end__];
+----
+
+Then place readwrite data and STACK to this region
+
+[source, cpp, linenums]
+----
+/* backup_buffer_section needed for ST_SIS library */
+define block CRAM_DATA with fixed order {section backup_buffer_section, readwrite };
+
+place at end of CRAM_region  { block CSTACK };
+place at start of CRAM_region { block CRAM_DATA,  block HEAP };
+----
+
+Here the STACK will be placed at address 0x10003FFF, and the max address of the stack head is 1x10002FFF.
+The read-write data will be placed starting from the address 0x100000020 after backup_buffer_section.
+
+After that, all non-const variables will be placed in the SRAM2 area. For example, all these objects will be placed in the SRAM2.
+
+[source, cpp, linenums]
+----
+cBleDirector oBleDirector;
+cDisplaysDirector oDisplaysDirector;
+cSensorTemperatureCore oSensorTemperatureCore;
+cSensorTemperature oSensorTemperature;
+cOperatingTimeCounter oOperatingTimeCounter;
+----
+
+== Place data to SRAM1 area
+To place non-safety data to the SRAM1 area, it needs to SRAM1 region
+
+[source, cpp, linenums]
+----
+define symbol __ICFEDIT_region_IRAM1_start__ = 0x20000000;
+define symbol __ICFEDIT_region_IRAM1_end__   = 0x2000BFFF;
+define region IRAM_region   =   mem:[from __ICFEDIT_region_IRAM1_start__ to __ICFEDIT_region_IRAM1_end__];
+----
+
+Define and place special segment for non-safety data
+
+[source, cpp, linenums]
+----
+place in IRAM_region  { readonly section nonparitycheck_ram, readwrite section nonparitycheck_ram };
+----
+
+In the source code, it needs to say to the compiler and linker that data should be placed in the nonparitycheck_ram segment. For this purpose, the next macro should be defined in the source code:
+
+[source, cpp, linenums]
+----
+#define nonparityram _Pragma("location=\"nonparitycheck_ram\"")
+----
+
+Then we can place non-safety data in the SRAM1 region:
+
+[source, cpp, linenums]
+----
+nonparityram tFrameBuffer oFrameBuffer; //place GLCD frame buffer to the SRAM1 area
+----
+
